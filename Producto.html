@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos electrónicos</title>
+    <link rel="stylesheet" href="Producto.css">
+</head>
+<body>
+
+<div class="producto1">
+    <div class="detalle_producto" id="producto1">
+        <img src="https://mobilestore.ec/wp-content/uploads/2024/10/AirPods-4-Mobile-Store-Ecuador1.jpg" alt="Airpods">
+        <h4>AirPods 4</h4>
+        <p>$150.00</p>
+    </div>
+</div>
+
+<!-- Ventana emergente -->
+<div class="overlay" id="overlay">
+    <div class="marco_producto">
+        <span class="close">&times;</span>
+        <h3>AirPods 4</h3>
+        <img src="https://mobilestore.ec/wp-content/uploads/2024/10/AirPods-4-Mobile-Store-Ecuador1.jpg" alt="Airpods">
+        <div class="categoria">Audio</div>
+        <div class="precio">$159.00</div>
+        <p><strong>Descripción:</strong><br>Diseñado por apple. Contiene amplificador exclusivo con alto rango dinámico.</p>
+        <button class="boton_añadir">Añadir al carrito</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#producto1").click(function(){
+            $("#overlay").fadeIn(200);
+        });
+
+        $(".close, #overlay").click(function(e){
+            if(e.target.id === "overlay" || e.target.className === "close"){
+                $("#overlay").fadeOut(200);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

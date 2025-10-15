@@ -1,0 +1,188 @@
+* {
+    margin: 0;
+    font-family: Karla, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    background-color: #8ECAE6;
+    color: white;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.logo img {
+    width: 80px;
+    height: auto;
+}
+
+.btn {
+    background-color: #022047;
+    color:#FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #e6b800;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li a {
+    display: block;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+
+nav ul li a:hover {
+    color: #FB8500;
+}
+
+.contenedor{
+    margin-top: 15px;
+    margin-left: 20px;
+    display:flex;
+    flex-direction: row;
+}
+
+.contenedor2{
+    position: relative;
+    margin-top: 25px;
+    margin-left: 20px;
+}
+
+.logo-img{
+    width: 160px;
+    height: 45px;
+}
+
+.superpuesto{
+    position: absolute;
+    height: 19px;
+    top: 7px;
+    left: 10px;
+}
+
+.superpuesto2{
+    position: absolute;
+    height: 35px;
+    left: 1623px;
+}
+
+.input_busqueda{
+    width: 1575px;
+    height: 30px;
+    border-radius: 15px;
+    padding-left: 35px;
+    background: rgba(0, 0, 94, 0.1);
+    border-color: lightgray;
+    outline: none;
+}
+
+.contenedor3{
+    margin-top: 20px;
+    margin-left: 20px;
+    border: 2px rgba(0, 0, 94, 0.3) solid;
+    height: 320px;
+    width: 300px;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.contenedor4{
+
+}
+
+.producto{
+
+}
+
+.opciones {
+    position: absolute;
+    list-style: none;
+    display: flex;
+    gap: 80px;
+    justify-content: center;
+    top: 25px;
+    left: 510px;
+}
+
+.opciones li a {
+    text-decoration: none;
+    color: black;
+    font-style: initial;
+    font-weight: bold;
+    transition-duration: 0.4s;
+}
+
+.opciones li a:hover{
+    text-decoration: underline;
+    color: coral;
+}
+
+.boton_inicio_sesion{
+    padding: 16px 25px;
+    border: none;
+    outline: none;
+    position: absolute;
+    top: 38px;
+    left: 1510px;
+    border-radius: 10px;
+    height: 30px;
+    color: white;
+    background-color: #00005e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.opciones2 {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-weight: bold;
+}
+
+.item{
+    display: flex;
+    cursor: pointer;
+    background-color: white;
+    border-radius: 8px;
+    width: 212px;
+    height: 40px;
+    font-weight: normal;
+    align-items: center;
+    padding-left: 10px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.item:hover{
+    background-color: #00005e;
+    color: white;
+    transform: translateX(5px) scale(1.05);
+}

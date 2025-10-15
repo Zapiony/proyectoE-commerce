@@ -1,0 +1,161 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* HEADER */
+
+header h1 {
+    margin: 0;
+}
+
+/* CONTAINER */
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-around; /* Espacia los elementos de forma pareja */
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li a {
+    display: block;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+
+nav ul li a:hover {
+    color: #FB8500;
+}
+
+.logo img {
+    width: 80px; /* ajusta el tamaño */
+    height: auto;
+}
+.btn {
+    background-color: #022047;
+    color:#FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #e6b800;
+}
+header {
+    display: flex;
+    justify-content: space-between; /* reparte los 3 elementos */
+    align-items: center; /* centra verticalmente */
+    padding: 10px 30px;
+    background-color: #8ECAE6;
+    color: white;
+
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+    /* Degradado de izquierda a derecha */
+    background-image: url('../img/fondo.jpg'); /* reemplaza con la ruta de tu imagen */
+    background-size: cover;      /* hace que la imagen cubra todo el container */
+    background-position: center; /* centra la imagen */
+    background-repeat: no-repeat; /* evita que se repita */
+
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    min-height: 1500px; /* hace que el container tenga altura mínima */
+
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Karla, sans-serif;
+    min-height: 2000px; /* fuerza que el body tenga al menos 2000px de altura */
+}
+.hero {
+    display: flex;
+    height: 75vh; /* Altura de la sección hero */
+    position: relative; /* Necesario para la posición absoluta de la curva/imagen */
+}
+
+.hero__contenido {
+    /* Define la forma curva en la esquina inferior derecha */
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+
+    background-color: #022340;
+    width: 45%; /* Ancho de la sección de texto */
+    padding: 80px 40px 100px 80px;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2; /* Asegura que el contenido quede encima */
+}
+.hero__content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%; /* Ajusta el ancho para la sección azul */
+    height: 100%;
+    z-index: 2; /* Para que esté por encima de la imagen de fondo */
+
+    /* Esta es la clave para la forma: clip-path */
+    /* Aquí definimos un polígono que simula la curva.
+       Los valores pueden necesitar ajustes finos para que coincida exactamente. */
+    clip-path: polygon(
+            0 0,
+            100% 0,
+            100% 70%,    /* Punto antes de la curva */
+            85% 90%,     /* Control de la curva (aproximación) */
+            60% 100%,    /* Fondo de la curva */
+            0% 100%
+    );
+    background-color: #022340;
+    display: flex;
+    align-items: center; /* Centrar verticalmente el contenido */
+    padding-left: 80px;
+}
+
+.hero__contenido h1 {
+    font-size: 48px;
+    margin: 0 0 10px 0;
+    line-height: 1.1;
+}
+
+.hero__contenido p {
+    font-size: 32px;
+    margin: 0 0 30px 0;
+    font-style: italic;
+    font-weight: 300;
+}
+
+.hero__contenido strong {
+    font-style: normal;
+}
+
+
+
+.hero__imagen {
+    width: 65%; /* Ocupa el resto del espacio */
+    background-image: url('../img/fondo.jpg'); /* Reemplaza con la ruta de tu imagen */
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 1; /* Fondo detrás del contenido */
+}

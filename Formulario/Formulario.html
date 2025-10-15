@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario</title>
+    <LINK REL="stylesheet" TYPE="text/css" HREF="Formulario.css">
+</head>
+<body>
+<header>
+    <div class="logo">
+        <img src="../img/logo2.png" alt="Descripción de la imagen">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/proyectoE-commerce/Home/Home.html">INICIO</a></li>
+            <li><a href="/proyectoE-commerce/Productos/Productos.html">PRODUCTOS & SERVICIOS</a></li>
+            <li><a href="/proyectoE-commerce/Formulario/Formulario.html">ENCUESTA DE SATIISFACCIÓN</a></li>
+        </ul>
+    </nav>
+    <button class="btn">Registrarse</button>
+</header>
+<div class="form">
+    <div class="form-container">
+        <h1 class="title">CONECTA CON <span class="highlight">NOSOTROS</span>.</h1>
+        <p class="subtitle">Completa el formulario a continuación y nos pondremos en contacto contigo en breve.</p>
+
+        <form id="contact-form" class="contact-form">
+
+            <div class="input-group">
+                <label for="nombre">Nombre Completo <span class="required">*</span></label>
+                <input type="text" id="nombre" name="nombre" placeholder="Escribe aquí" required>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Correo Electrónico <span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="Escribe aquí" required>
+            </div>
+
+            <div class="input-group">
+                <label for="empresa">Nombre de tu Empresa <span class="required">*</span></label>
+                <input type="text" id="empresa" name="empresa" placeholder="Escribe aquí" required>
+            </div>
+
+            <div class="input-group">
+                <label for="sector">Industria o Sector <span class="required">*</span></label>
+                <select id="sector" name="sector" required>
+                    <option value="" disabled selected>Selecciona un sector</option>
+                    <option value="tecnologia">Tecnología</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="input-group full-width">
+                <label for="mensaje">Tu Mensaje <span class="required">*</span></label>
+                <textarea id="mensaje" name="mensaje" placeholder="Aquí tu mensaje..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Enviar <span class="icon">ᯓ➤</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<div id="success-modal" class="modal">
+    <div class="modal-content">
+        <p>✅ ¡Datos enviados exitosamente!</p>
+    </div>
+</div>
+
+<script src="Formulario.js"></script>
+</body>
+</html>
