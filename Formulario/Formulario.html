@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Formulario</title>
     <LINK REL="stylesheet" TYPE="text/css" HREF="Formulario.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
 <header>
@@ -26,24 +28,24 @@
 
         <form id="contact-form" class="contact-form">
 
-            <div class="input-group">
-                <label for="nombre">Nombre Completo <span class="required">*</span></label>
-                <input type="text" id="nombre" name="nombre" placeholder="Escribe aquí" required>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre Completo <span class="required">*</span></label>
+                <input type="text" class="form-control" name="nombre" placeholder="Escribe aquí" required>
             </div>
 
-            <div class="input-group">
-                <label for="email">Correo Electrónico <span class="required">*</span></label>
-                <input type="email" id="email" name="email" placeholder="Escribe aquí" required>
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico <span class="required">*</span></label>
+                <input type="email" class="form-control" name="email" placeholder="Escribe aquí" required>
             </div>
 
-            <div class="input-group">
-                <label for="empresa">Nombre de tu Empresa <span class="required">*</span></label>
-                <input type="text" id="empresa" name="empresa" placeholder="Escribe aquí" required>
+            <div class="mb-3">
+                <label for="empresa" class="form-label">Nombre de tu Empresa <span class="required">*</span></label>
+                <input type="text" class="form-control" id="empresa" name="empresa" placeholder="Escribe aquí" required>
             </div>
 
-            <div class="input-group">
-                <label for="sector">Industria o Sector <span class="required">*</span></label>
-                <select id="sector" name="sector" required>
+            <div class="mb-3">
+                <label for="sector" class="form-label">Industria o Sector <span class="required">*</span></label>
+                <select id="sector" name="sector" class="form-select" required>
                     <option value="" disabled selected>Selecciona un sector</option>
                     <option value="tecnologia">Tecnología</option>
                     <option value="marketing">Marketing</option>
@@ -52,24 +54,31 @@
                 </select>
             </div>
 
-            <div class="input-group full-width">
-                <label for="mensaje">Tu Mensaje <span class="required">*</span></label>
-                <textarea id="mensaje" name="mensaje" placeholder="Aquí tu mensaje..." required></textarea>
+            <div class="mb-3">
+                <label for="mensaje" class="form-label">Tu Mensaje <span class="required">*</span></label>
+                <textarea id="mensaje" name="mensaje" placeholder="Aquí tu mensaje..." class="form-control" required></textarea>
             </div>
 
-            <button type="submit" class="submit-btn">
-                Enviar <span class="icon">ᯓ➤</span>
-            </button>
+            <button type="submit" class="btn btn-primary"> Enviar <span class="icon">ᯓ➤</span> </button>
         </form>
     </div>
 </div>
 
-<div id="success-modal" class="modal">
-    <div class="modal-content">
-        <p>✅ ¡Datos enviados exitosamente!</p>
+<div id="success-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">¡Éxito!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>✅ ¡Datos enviados exitosamente!</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<script src="Formulario.js"></script>
+    <script src="Formulario.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
