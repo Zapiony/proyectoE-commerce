@@ -186,3 +186,15 @@ nav ul li a:hover {
     color: white;
     transform: translateX(5px) scale(1.05);
 }
+
+.nav-link{
+    transition: transform 0.2s, background-color 0.2s, color 0.2s;
+    border-radius: 8px;
+    padding: 0.7rem;
+}
+
+.nav-link:hover{
+    background-color: #00005e;
+    color: white !important;
+    transform: translateX(2px) scale(1.015);
+}
