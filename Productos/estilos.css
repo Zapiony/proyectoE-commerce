@@ -1,6 +1,7 @@
 * {
     margin: 0;
     font-family: Karla, sans-serif;
+    box-sizing: border-box;
 }
 
 header {
@@ -60,6 +61,14 @@ nav ul li a {
 
 nav ul li a:hover {
     color: #FB8500;
+}
+
+.principal-container{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    gap: 2vw;
+    padding: 3vh;
 }
 
 .contenedor{
