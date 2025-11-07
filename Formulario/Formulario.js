@@ -1,16 +1,22 @@
 document.getElementById('contact-form').addEventListener('submit', function(event) {
-    // Previene el envío por defecto del formulario (evita la recarga de la página)
-    event.preventDefault();
+    event.preventDefault(); // Evita el envío del formulario
 
-    // Obtiene la referencia a la ventana modal de éxito
+
+    let form_ele = $("#imput_group");
+    let seccion = form_ele.find(".seccion");
+
+    if (seccion.val() === "" || seccion.val() == null) {
+        alert(" Error: El campo 'sección' está vacío.");
+        return;
+    }
+
+    // Si pasa la validación, muestra el modal
     const modal = document.getElementById('success-modal');
-
-    // Muestra la ventana modal (asumiendo que Formulario.css la oculta por defecto)
     modal.style.display = 'flex';
 
-    // Configura un temporizador para ocultar la modal y resetear el formulario después de 3 segundos
+    // Oculta el modal y limpia el formulario después de 3 segundos
     setTimeout(() => {
-        modal.style.display = 'none'; // Oculta la modal
-        this.reset(); // Limpia todos los campos del formulario
-    }, 3000); // 3000 milisegundos = 3 segundos
+        modal.style.display = 'none';
+        form_ele[0].reset(); // Limpia los campos (con jQuery)
+    }, 3000);
 });
