@@ -10,7 +10,7 @@ body {
 }
 /* Agranda imagenes al pasar el mouse por encima */
 .imagenes_producto:hover {
-    transform: scale(1.1);/*inimacion sea suave*/
+    transform: scale(1.1);/*animacion sea suave*/
 }
 
 /* para los botones */
@@ -18,36 +18,4 @@ body {
     border-radius: 10px;
 }
 
-/* Cards evita la deformacion defino las alturas*/
-.card img {
-    height: 130px;
-    object-fit: cover;
-}
 
-/* Media Queries */
-
-/* Tablets */
-@media (max-width: 992px) {
-    .informacion_producto h2 {
-        font-size: 1.4rem;
-    }
-}
-
-/* Celulares */
-@media (max-width: 576px) {
-    .card {
-        width: 100%;
-    }
-
-    .imagenes_producto {
-        width: 60px;
-    }
-
-    .informacion_producto h2 {
-        font-size: 1.2rem;
-    }
-
-    .informacion_producto p, .informacion_producto li {
-        font-size: 0.9rem;
-    }
-}

@@ -68,7 +68,19 @@ $(function() {
             .data('id', producto.id)
             .data('nombre', producto.nombre)
             .text('Agregar al carrito');
+
+        let $btnDetalle = $('<a>')
+            .addClass('btn btn-primary btn-detalle mt-3')
+            .text('Detalle producto')
+            .on('click', function () {
+                localStorage.setItem('detalleProducto', JSON.stringify(producto));
+
+                window.location.href = '../detalle_producto/pagina.html';
+
+            });
+
         $cardBody.append($title, $contentDiv, $btn);
+        $cardBody.append($btnDetalle);
         $card.append($img, $cardBody);
         $productoDiv.append($card);
 
