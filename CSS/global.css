@@ -1,0 +1,20 @@
+* {
+    margin: 0;
+    font-family: Karla, sans-serif;
+    box-sizing: border-box;
+}
+
+.navbar {
+    padding: 1rem;
+}
+
+.navbar-nav .nav-link {
+    color: white;
+    font-size: 18px;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #FB8500;
+}
