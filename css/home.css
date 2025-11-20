@@ -1,41 +1,5 @@
-* {
-    margin: 0;
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    height: 100vh;
-}
-
 header h1 {
     margin: 0;
-}
-
-nav ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    justify-content: space-around;
-}
-
-nav ul li {
-    margin: 0;
-}
-
-nav ul li a {
-    display: block;
-    padding: 15px 20px;
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    transition: background 0.3s;
-}
-
-nav ul li a:hover {
-    color: #FB8500;
 }
 
 .logo img {
@@ -96,19 +60,4 @@ nav ul li a:hover {
     font-size: 45px;
     color: #FB8500;
     font-weight: bold;
-}
-
-.navbar {
-    padding: 1rem;
-}
-
-.navbar-nav .nav-link {
-    color: white;
-    font-size: 18px;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #FB8500;
 }
