@@ -11,35 +11,7 @@ body {
     transform: scale(1.1);
 }
 
-.btn-primary, .btn-success {
+    .btn-primary, .btn-success {
     border-radius: 10px;
 }
 
-.card img {
-    height: 130px;
-    object-fit: cover;
-}
-
-@media (max-width: 992px) {
-    .informacion_producto h2 {
-        font-size: 1.4rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .card {
-        width: 100%;
-    }
-
-    .imagenes_producto {
-        width: 60px;
-    }
-
-    .informacion_producto h2 {
-        font-size: 1.2rem;
-    }
-
-    .informacion_producto p, .informacion_producto li {
-        font-size: 0.9rem;
-    }
-}
