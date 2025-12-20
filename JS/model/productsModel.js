@@ -16,13 +16,13 @@ class Products {
     }
 
     getProductById(id) {
-        return find(p => 
+        return this.Products.find(p => 
             p.id == id
         )
     }
 
     getProductoDest() {
-        return find(p => 
+        return this.Products.find(p => 
             p.destacado == true
         )
     }
