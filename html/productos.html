@@ -3,88 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Amazon</title>
+    <title>EZA | Emy,Zap,Azq</title>
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/productos.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="estilos.css">
-
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                Bootstrap
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+    <header>
+        <nav class="navbar bg-body-tertiary" data-bs-theme="dark">
+            <div class="container-fluid">
+                <img src="/img/Logo.png" alt="Logo">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/html/home.html">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/html/productos.html">Productos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/html/formulario.html">Encuesta de satisfacción</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="search-container mt-3 ms-4 me-4">
+            <form class="search-form">
+                <input type="text" placeholder="Buscas algo especial?" class="form-control search-input">
+                <img src="https://images.icon-icons.com/1129/PNG/512/searchmagnifierinterfacesymbol1_79893.png" class="search-icon">
+            </form>
+
+            <button id="cart-button" class="btn btn-cart">
+                <img src="https://images.icon-icons.com/1369/PNG/512/-shopping-cart_90604.png" class="cart-icon">
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav text-center">
-                    <li class="nav-item mx-3">
-                        <a class="nav-link" href="/HTML/home.html">INICIO</a>
+        </div>
+
+        <div class="principal-container">
+            <div class="col-md-3">
+                <ul class="nav flex-column p-3">
+                    <li class="nav-item mb-2">
+                        <span class="fw-bold text-uppercase text-primary text-dark">Categoría</span>
                     </li>
-                    <li class="nav-item mx-3">
-                        <a class="nav-link" href="/HTML/productos.html">PRODUCTOS & SERVICIOS</a>
-                    </li>
-                    <li class="nav-item mx-3">
-                        <a class="nav-link" href="/HTML/formulario.html">ENCUESTA DE SATISFACCIÓN</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link active text-dark" href="#">Todo</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Audio</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Video</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Celulares</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Relojes</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="#">Reparaciones</a></li>
                 </ul>
             </div>
-            <button class="btn btn-outline-light">Registrarse</button>
-        </div>
-    </nav>
 
-    <div class = "position-relative col-md-3 mt-3 ms-4" style="width: 93%">
-        <form class = "cuadro_busqueda">
-            <input type = "text" placeholder="Buscas algo especial?" class = "form-control ps-5">
-            <img src = "https://images.icon-icons.com/1129/PNG/512/searchmagnifierinterfacesymbol1_79893.png" class="position-absolute top-50 translate-middle-y" style="left: 15px; width: 18px; height: 18px;">
-        </form>
-        <button id="cart-button" class="btn position-absolute top-50 translate-middle-y cart-btn">
-            <img src="https://images.icon-icons.com/1369/PNG/512/-shopping-cart_90604.png" width="28" height="28">
-        </button>
-    </div>
+            <div id="productos-container" class="row row-cols-1 row-cols-md-3 g-4"></div>
 
-    <div class="principal-container">
-        <div class="col-md-3">
-            <ul class="nav flex-column p-3" style="border: 2px solid rgba(0, 0, 94, 0.1); border-radius: 30px">
-                <li class="nav-item mb-2">
-                    <span class="fw-bold text-uppercase text-primary text-dark">Categoría</span>
-                </li>
-                <li class="nav-item"><a class="nav-link active text-dark" href="#">Todo</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="#">Audio</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="#">Video</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="#">Celulares</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="#">Relojes</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="#">Reparaciones</a></li>
-            </ul>
-        </div>
-
-        <div id="productos-container" class="row row-cols-1 row-cols-md-3 g-4"></div>
-
-        <div id="cart-overlay"></div>
-        
-        <div id="sidebar-cart">
-            <div class="cart-header">
-                <h5 class="fw-bold mb-0">Carrito de Compras</h5>
-                <button class="close-cart">&times;</button>
-            </div>
-            <div id="cart-items" class="list-unstyled mb-3"></div>
-            <div class="cart-footer">
-                <p class="fw-bold">Total: <span id="sidebar-cart-total">$0.00</span></p>
+            <div id="cart-overlay"></div>
+            
+            <div id="sidebar-cart">
+                <div class="cart-header">
+                    <h5 class="fw-bold mb-0">Carrito de Compras</h5>
+                    <button class="close-cart">&times;</button>
+                </div>
+                <div id="cart-items" class="list-unstyled mb-3"></div>
+                <div class="cart-footer">
+                    <p class="fw-bold">Total: <span id="sidebar-cart-total">$0.00</span></p>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="/js/controller/productsControler.js"></script>
+    <script src="/js/controller/productsController.js"></script>
     <script src="/js/model/productsModel.js"></script>
     <script src="/js/view/productsView.js"></script>
     <script> 
-        controller = new ProductController(); 
+        controller = new ProductsController(); 
     </script>
 </body>
 </html>
