@@ -1,4 +1,4 @@
-class w {
+class ProductsController {
     constructor() {
         this.model = new Products();
         this.view = new productsView();
@@ -6,21 +6,31 @@ class w {
     }
 
     init() {
-    const products = this.model.getProducts();
-    this.view.renderProducts(products);
-    
-    $('#cart-button').on('click', () => {
-        this.view.openCart();
-    });
+        const products = this.model.getProducts();
+        this.view.renderProducts(products);
 
-    // 2. Evento para cerrar el carrito (clic en la 'X')
-    $('.close-cart').on('click', () => {
-        this.view.closeCart();
-    });
+        $(document).on('click', '.btn-add', (e) => {
+            const id = $(e.currentTarget).data('id');
+            const producto = this.model.getProductById(id);
+            
+            if (this.model.agregarAlCarrito(id)) {
+                this.view.mostrarMensajeExito(producto.nombre);
+                this.actualizarTodoElCarrito();
+            }
+        });
 
-    // 3. Evento para cerrar al hacer clic en el fondo oscuro
-    $('#cart-overlay').on('click', () => {
-        this.view.closeCart();
-    });
-}
+        $('#cart-button').on('click', () => this.view.openCart());
+        $('.close-cart, #cart-overlay').on('click', () => this.view.closeCart());
+    }
+
+    actualizarTodoElCarrito() {
+        const carrito = this.model.getCarrito();
+        this.view.actualizarCarritoUI(carrito, (id) => this.eliminarDelCarrito(id));
+        this.view.actualizarContador(carrito);
+    }
+
+    eliminarDelCarrito(id) {
+        this.model.cart = this.model.cart.filter(item => item.id !== id);
+        this.actualizarTodoElCarrito();
+    }
 }

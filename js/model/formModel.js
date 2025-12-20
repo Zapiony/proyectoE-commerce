@@ -29,7 +29,6 @@ class FormModel {
     }
 
     async sendData() {
-        // Simula la respuesta del servidor
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(Math.random() >= 0.5);

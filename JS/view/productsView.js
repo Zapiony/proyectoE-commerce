@@ -6,6 +6,7 @@ class productsView {
         this.sidebarTotalText = $('#sidebar-cart-total');
         this.cartOverlay = $('#cart-overlay');
         this.sidebarCart = $('#sidebar-cart');
+        this.cartCount = $('#cart-count');
     }
 
     renderProducts(productos) {
@@ -48,7 +49,6 @@ class productsView {
     }
 
     actualizarCarritoUI(carrito, callbackEliminar) {
-        // Calcular total
         let total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
         this.cartTotalText.text('$' + total.toFixed(2));
         this.sidebarTotalText.text('$' + total.toFixed(2));
@@ -80,6 +80,19 @@ class productsView {
             $cartCard.append($cardContent);
             this.cartItemsContainer.append($cartCard);
         });
+    }
+
+    actualizarContador(carrito) {
+        const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+        if (totalItems > 0) {
+            this.cartCount.text(totalItems).show();
+        } else {
+            this.cartCount.hide();
+        }
+    }
+
+    mostrarMensajeExito(nombre) {
+        alert(`¡${nombre} añadido correctamente!`);
     }
 
     openCart() {

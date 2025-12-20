@@ -30,4 +30,18 @@ class Products {
     getCarrito() {
         return this.cart;
     }
+
+    agregarAlCarrito(id) {
+        const producto = this.getProductById(id);
+        if (producto) {
+            const itemEnCarrito = this.cart.find(item => item.id === id);
+            if (itemEnCarrito) {
+                itemEnCarrito.cantidad++;
+            } else {
+                this.cart.push({ ...producto, cantidad: 1 });
+            }
+            return true;
+        }
+        return false;
+    }
 }
