@@ -1,7 +1,24 @@
+:root {
+    --color-1: #8ECAE6;
+    --color-2: #219EBC;
+    --color-3: #022047;
+    --color-4: #FFB703;
+    --color-5: #FB8500;
+    --color-blanco: #ffffff;
+    --color-negro: #000;
+}
+
 * {
     margin: 0;
     font-family: Karla, sans-serif;
     box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    min-height: 100dvh;
+    height: 100px;
+    grid-template-rows: auto 1fr auto;
 }
 
 .navbar {
@@ -9,12 +26,20 @@
 }
 
 .navbar-nav .nav-link {
-    color: white;
+    color: var(--color-blanco);
     font-size: 18px;
     padding: 0.5rem 1rem;
     transition: color 0.3s;
 }
 
+nav img {
+    height: 5vh;
+}
+
 .navbar-nav .nav-link:hover {
-    color: #FB8500;
+    color: var(--color-5);
+}
+
+.btn:hover {
+    background-color: #e6b800;
 }
