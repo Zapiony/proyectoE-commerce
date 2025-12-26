@@ -2,24 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>EZA | Emy,Zap,Azq</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio | EZA - Tienda Online</title>
+    
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/home.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
+    <a href="#contenido-principal" class="skip-link">Saltar al contenido</a>
+
     <header>
         <nav class="navbar bg-body-tertiary fixed-top" data-bs-theme="dark">
             <div class="container-fluid">
-                <img src="/img/Logo.png" alt="Logo">
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <img src="/img/Logo.png" alt="Logo EZA - Inicio de la tienda">
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Abrir menú de navegación">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                     <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
                     </div>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -38,12 +44,14 @@
             </div>
         </nav>
     </header>
-    <main>
+
+    <main id="contenido-principal">
         <section class="principal">
             <div class="left">
                 <div class="text">
-                    <h1 class="adaptabilidad-texto">Todo lo que buscas</h1>
-                    <p class="adaptabilidad-texto">al alcance de un <span class="adaptabilidad-texto">click</span></p>
+                    <h1 class="adaptabilidad-texto">
+                        Todo lo que buscas <br> al alcance de un <span>click</span>
+                    </h1>
                     <a href="/html/productos.html" class="btn btn-primary">Explorar Productos</a>
                 </div>
             </div>

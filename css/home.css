@@ -18,6 +18,8 @@ header h1 {
     background-image: url('../img/fondo.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+    background-color: #001226; 
+
 }
 
 .left {
@@ -27,6 +29,7 @@ header h1 {
     height: 100vh;
     background-image: url(../img/Vector.png);
     background-size: cover;
+
 }
 
 .text {
@@ -36,7 +39,7 @@ header h1 {
 }
 
 .text h1 {
-    color: var(--color-blanco);
+    color: #FFFFFF;
 }
 
 .text p {
@@ -44,6 +47,11 @@ header h1 {
 }
 
 .text span {
-    color: var(--color-5);
+    color: #D35400;
     font-weight: bold;
+}
+a:focus, button:focus, .btn:focus {
+    outline: 4px solid #FFD700 !important;
+    outline-offset: 3px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
