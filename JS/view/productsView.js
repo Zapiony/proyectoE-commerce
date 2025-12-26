@@ -17,7 +17,7 @@ class productsView {
             let $img = $('<img>')
                 .addClass('card-img-top')
                 .attr('src', '/img/fondo.jpg')
-                .attr('alt', producto.nombre);
+                .attr('alt', '');
             let $cardBody = $('<div>').addClass('card-body d-flex flex-column');
             let $title = $('<h5>').addClass('card-title').text(producto.nombre);
             let $text = $('<p>').addClass('card-text').text(producto.detalle);
@@ -37,7 +37,7 @@ class productsView {
                 .text('Detalle producto')
                 .on('click', () => {
                     localStorage.setItem('detalleProducto', JSON.stringify(producto));
-                    window.location.href = '../detalle_producto/pagina.html';
+                    window.location.href = '/html/detalleProducto.html';
                 });
 
             $cardBody.append($title, $contentDiv, $btnAdd, $btnDetalle);
