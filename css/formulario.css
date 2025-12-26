@@ -6,8 +6,8 @@
 }
 
 .form-container {
-    padding: 5vh 0vw;
-    margin: 5vw;
+    padding: 1vh 0vw;
+    margin: 1vw;
 }
 
 .title {
@@ -19,7 +19,7 @@
 }
 
 .highlight {
-    color: #FB8500;
+    color: #922B21 !important;
 }
 
 .subtitle {
@@ -46,7 +46,8 @@
 }
 
 .required {
-    color: #FB8500;
+    color: #922B21 !important;
+    font-weight: bold;
     font-size: 1.1em;
     margin-left: 2px;
 }
