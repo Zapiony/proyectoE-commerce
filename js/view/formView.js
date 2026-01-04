@@ -1,9 +1,13 @@
 class FormView {
     constructor() {
         this.form = $('.contact-form');
-        this.loadingModal = new bootstrap.Modal(document.getElementById('loading-modal'));
-        this.successModal = new bootstrap.Modal(document.getElementById('success-modal'));
-        this.errorModal = new bootstrap.Modal(document.getElementById('error-modal'));
+        this.loadingModalElement = document.getElementById('loading-modal');
+        this.successModalElement = document.getElementById('success-modal');
+        this.errorModalElement = document.getElementById('error-modal');
+        
+        this.loadingModal = new bootstrap.Modal(this.loadingModalElement, { backdrop: 'static', keyboard: false });
+        this.successModal = new bootstrap.Modal(this.successModalElement);
+        this.errorModal = new bootstrap.Modal(this.errorModalElement);
     }
 
     getFormData() {
@@ -30,7 +34,6 @@ class FormView {
     }
 
     showLoading() {
-        this.form.hide();
         this.loadingModal.show();
     }
 
@@ -41,20 +44,20 @@ class FormView {
     showStatus(isSuccess) {
         if (isSuccess) {
             this.successModal.show();
+            setTimeout(() => {
+                this.successModal.hide();
+                this.resetForm();
+            }, 3000);
         } else {
             this.errorModal.show();
+            setTimeout(() => {
+                this.errorModal.hide();
+            }, 3000);
         }
-
-        setTimeout(() => {
-            this.successModal.hide();
-            this.errorModal.hide();
-            this.resetForm();
-        }, 2000);
     }
 
     resetForm() {
         this.form.trigger('reset');
         this.clearErrors();
-        this.form.show();
     }
 }

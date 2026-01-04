@@ -10,27 +10,29 @@
 </head>
 <body>
     <header>
-        <nav class="navbar bg-body-tertiary" data-bs-theme="dark">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
             <div class="container-fluid">
-                <img src="/img/Logo.png" alt="Logo EZA - Inicio de la tienda">
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-label="Abrir menú de navegación">
+                <img src="/img/Logo.png" alt="Logo del sitio EZA">
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                     <div class="offcanvas-header">
-                        <h2 class="offcanvas-title" id="offcanvasNavbarLabel">Menú </h2>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <ul class="navbar-nav justify-content-center flex-grow-1 pe-3 gap-5">
                             <li class="nav-item">
-                                <a class="nav-link" href="/html/home.html">Inicio</a>
+                                <a class="nav-link" href="/html/home.html">INICIO</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/html/productos.html">Productos</a>
+                                <a class="nav-link" href="/html/productos.html">PRODUCTOS</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/html/formulario.html">Encuesta de satisfacción</a>
+                                <a class="nav-link" href="/html/formulario.html">ENCUESTA DE SATISFACCIÓN</a>
                             </li>
                         </ul>
                     </div>
@@ -46,20 +48,23 @@
                 CONECTA CON <span style="color: #D35400;">NOSOTROS</span></h1>
                 <p class="h5 text-center mb-4" style="color: #022047; font-weight: normal;">Completa el formulario a continuación y nos pondremos en contacto contigo en breve.</p>
 
-                <form action="#" method="post" class="mt-4 shadow p-4 rounded bg-light">
+                <form action="#" method="post" class="contact-form mt-4 shadow p-4 rounded bg-light">
                     <div class="mb-4">
                         <label for="nombre" class="form-label">Nombre Completo <span class="required">*</span></label>
                         <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe aquí" required aria-required="true">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Correo Electrónico <span class="required">*</span></label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Escribe aquí" required aria-required="true">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="empresa" class="form-label">Nombre de tu Empresa <span class="required">*</span></label>
                         <input type="text" class="form-control" id="empresa" name="empresa" placeholder="Escribe aquí" required aria-required="true">
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
@@ -71,11 +76,13 @@
                             <option value="servicios">Servicios</option>
                             <option value="otro">Otro</option>
                         </select>
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="mensaje" class="form-label">Tu Mensaje <span class="required">*</span></label>
                         <textarea id="mensaje" name="mensaje" placeholder="Aquí tu mensaje..." class="form-control" required aria-required="true"></textarea>
+                        <div class="invalid-feedback"></div>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100"> Enviar <span class="icon" aria-hidden="true">ᯓ➤</span> </button>
@@ -129,11 +136,8 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="/js/controller/formController.js"></script>
     <script src="/js/model/formModel.js"></script>
     <script src="/js/view/formView.js"></script>
-    <script> 
-        controller = new FormController(); 
-    </script>
+    <script src="/js/controller/formController.js"></script>
 </body>
 </html>
