@@ -1,0 +1,13 @@
+.adminContainer {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(2, 32, 71, 0.03);
+}
