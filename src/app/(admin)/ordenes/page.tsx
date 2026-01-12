@@ -200,6 +200,7 @@ export default function OrdenesPage() {
                     { name: 'PRV_RUC', label: 'Proveedor', type: 'select', options: proveedores.map(p => ({ value: p.PRV_RUC, label: p.PRV_NOMBRE })), required: true },
                     { name: 'ORD_FECHA_ENTREGA', label: 'Fecha Entrega', type: 'date', required: true, min: new Date().toISOString().split('T')[0] }
                 ]}
+                entityName="Orden"
             />
 
 

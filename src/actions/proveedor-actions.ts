@@ -18,6 +18,11 @@ function validateProveedorData(proveedor: IProveedor) {
         return 'El nombre de contacto no puede contener números ni caracteres especiales.';
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(proveedor.PRV_CORREO)) {
+        return 'El correo electrónico no es válido.';
+    }
+
     return null;
 }
 
@@ -42,7 +47,8 @@ export async function createProveedorAction(proveedor: IProveedor) {
             ...proveedor,
             PRV_NOMBRE: proveedor.PRV_NOMBRE.toUpperCase(),
             PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase(),
-            PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase()
+            PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase(),
+            PRV_CORREO: proveedor.PRV_CORREO.toLowerCase()
         };
 
         const existing = await getProveedorByRuc(proveedor.PRV_RUC);
@@ -69,7 +75,8 @@ export async function updateProveedorAction(proveedor: IProveedor) {
             ...proveedor,
             PRV_NOMBRE: proveedor.PRV_NOMBRE.toUpperCase(),
             PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase(),
-            PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase()
+            PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase(),
+            PRV_CORREO: proveedor.PRV_CORREO.toLowerCase()
         };
 
         await updateProveedor(proveedorToSave);

@@ -7,7 +7,7 @@ export const getAllProveedores = async (): Promise<IProveedor[]> => {
     try {
         connection = await openConnection();
         const result = await connection.execute(
-            `SELECT PRV_RUC, PRV_NOMBRE, PRV_DIRECCION, PRV_TELEFONO, PRV_RAZON_SOCIAL FROM PROVEEDOR`,
+            `SELECT PRV_RUC, PRV_NOMBRE, PRV_DIRECCION, PRV_TELEFONO, PRV_RAZON_SOCIAL, PRV_CORREO FROM PROVEEDOR`,
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
@@ -31,7 +31,7 @@ export const getProveedorByRuc = async (ruc: string): Promise<IProveedor | null>
     try {
         connection = await openConnection();
         const result = await connection.execute(
-            `SELECT PRV_RUC, PRV_NOMBRE, PRV_DIRECCION, PRV_TELEFONO, PRV_RAZON_SOCIAL FROM PROVEEDOR WHERE PRV_RUC = :ruc`,
+            `SELECT PRV_RUC, PRV_NOMBRE, PRV_DIRECCION, PRV_TELEFONO, PRV_RAZON_SOCIAL, PRV_CORREO FROM PROVEEDOR WHERE PRV_RUC = :ruc`,
             [ruc],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
@@ -55,14 +55,15 @@ export const createProveedor = async (proveedor: IProveedor) => {
     try {
         connection = await openConnection();
         const result = await connection.execute(
-            `INSERT INTO PROVEEDOR (PRV_RUC, PRV_NOMBRE, PRV_DIRECCION, PRV_TELEFONO, PRV_RAZON_SOCIAL) 
-             VALUES (:PRV_RUC, :PRV_NOMBRE, :PRV_DIRECCION, :PRV_TELEFONO, :PRV_RAZON_SOCIAL)`,
+            `INSERT INTO PROVEEDOR (PRV_RUC, PRV_NOMBRE, PRV_DIRECCION, PRV_TELEFONO, PRV_RAZON_SOCIAL, PRV_CORREO) 
+             VALUES (:PRV_RUC, :PRV_NOMBRE, :PRV_DIRECCION, :PRV_TELEFONO, :PRV_RAZON_SOCIAL, :PRV_CORREO)`,
             {
                 PRV_RUC: proveedor.PRV_RUC,
                 PRV_NOMBRE: proveedor.PRV_NOMBRE,
                 PRV_DIRECCION: proveedor.PRV_DIRECCION,
                 PRV_TELEFONO: proveedor.PRV_TELEFONO,
-                PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL
+                PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL,
+                PRV_CORREO: proveedor.PRV_CORREO
             },
             { autoCommit: true }
         );
@@ -86,13 +87,15 @@ export const updateProveedor = async (proveedor: IProveedor) => {
              SET PRV_NOMBRE = :PRV_NOMBRE, 
                  PRV_DIRECCION = :PRV_DIRECCION, 
                  PRV_TELEFONO = :PRV_TELEFONO,
-                 PRV_RAZON_SOCIAL = :PRV_RAZON_SOCIAL
+                 PRV_RAZON_SOCIAL = :PRV_RAZON_SOCIAL,
+                 PRV_CORREO = :PRV_CORREO
              WHERE PRV_RUC = :PRV_RUC`,
             {
                 PRV_NOMBRE: proveedor.PRV_NOMBRE,
                 PRV_DIRECCION: proveedor.PRV_DIRECCION,
                 PRV_TELEFONO: proveedor.PRV_TELEFONO,
                 PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL,
+                PRV_CORREO: proveedor.PRV_CORREO,
                 PRV_RUC: proveedor.PRV_RUC
             },
             { autoCommit: true }

@@ -10,6 +10,7 @@ export interface IProveedor {
     PRV_NOMBRE: string;
     PRV_DIRECCION: string;
     PRV_TELEFONO: string;
+    PRV_CORREO: string;
     PRV_RAZON_SOCIAL: string;
 }
 

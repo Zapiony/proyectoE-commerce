@@ -21,6 +21,7 @@ export default function ProveedorPage() {
         { header: 'RUC', accessor: 'PRV_RUC' },
         { header: 'RAZÓN SOCIAL', accessor: 'PRV_RAZON_SOCIAL' },
         { header: 'CONTACTO', accessor: 'PRV_NOMBRE' },
+        { header: 'CORREO', accessor: 'PRV_CORREO' },
         { header: 'DIRECCIÓN', accessor: 'PRV_DIRECCION' },
         { header: 'TELÉFONO', accessor: 'PRV_TELEFONO' },
     ];
@@ -30,6 +31,7 @@ export default function ProveedorPage() {
         { name: 'PRV_RUC', label: 'RUC', required: true },
         { name: 'PRV_RAZON_SOCIAL', label: 'Razón Social', required: true },
         { name: 'PRV_NOMBRE', label: 'Nombre Contacto', required: true },
+        { name: 'PRV_CORREO', label: 'Correo', type: 'email' as const, required: true },
         { name: 'PRV_DIRECCION', label: 'Dirección', required: true },
         { name: 'PRV_TELEFONO', label: 'Teléfono', type: 'tel' as const, required: true },
     ];
@@ -60,7 +62,8 @@ export default function ProveedorPage() {
         const filtered = allData.filter(item =>
             item.PRV_NOMBRE.toLowerCase().includes(lowerTerm) ||
             item.PRV_RAZON_SOCIAL.toLowerCase().includes(lowerTerm) ||
-            item.PRV_RUC.includes(lowerTerm)
+            item.PRV_RUC.includes(lowerTerm) ||
+            (item.PRV_CORREO && item.PRV_CORREO.toLowerCase().includes(lowerTerm))
         );
         setData(filtered);
     };
@@ -75,6 +78,12 @@ export default function ProveedorPage() {
         const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
         if (!nameRegex.test(newItem.PRV_NOMBRE)) {
             showAlert('error', 'El nombre de contacto no puede contener números.');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(newItem.PRV_CORREO)) {
+            showAlert('error', 'El correo electrónico no es válido.');
             return;
         }
 
@@ -155,6 +164,7 @@ export default function ProveedorPage() {
                 onDelete={handleDeleteClick}
                 idField="PRV_RUC"
                 searchPlaceholder="Buscar por nombre, razón social o RUC..."
+                entityName="Proveedor"
             />
 
             <AlertModal

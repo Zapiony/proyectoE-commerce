@@ -74,7 +74,7 @@ export const createOrdenCompraTransaction = async (orden: IOrdenCompra, detalles
     } catch (err) {
         console.error('[OrdenCompraModel] Error creating orden:', err);
         if (connection) {
-            try { await connection.rollback(); } catch (e) { console.error('Rollback error', e); }
+            try { await connection.execute(`ROLLBACK;`); } catch (e) { console.error('Rollback error', e); }
         }
         throw err;
     } finally {
@@ -112,26 +112,25 @@ export const deleteOrden = async (ordCodigo: number) => {
     let connection;
     try {
         connection = await openConnection();
-        // First delete details
+
         await connection.execute(
             `DELETE FROM DETALLE_ORD_COMPRA WHERE ORD_CODIGO = :id`,
             { id: ordCodigo },
             { autoCommit: false }
         );
 
-        // Then delete header
         await connection.execute(
             `DELETE FROM ORDEN_DE_COMPRA WHERE ORD_CODIGO = :id`,
             { id: ordCodigo },
             { autoCommit: false }
         );
 
-        await connection.commit();
+        await connection.execute(`COMMIT;`);
         return { success: true };
     } catch (err) {
         console.error('[OrdenCompraModel] Error deleting orden:', err);
         if (connection) {
-            try { await connection.rollback(); } catch (e) { console.error(e); }
+            try { await connection.execute(`ROLLBACK;`); } catch (e) { console.error(e); }
         }
         throw err;
     } finally {

@@ -36,6 +36,7 @@ interface GenericTableProps<T> {
     customActions?: (item: T) => React.ReactNode;
     searchPlaceholder?: string;
     idField?: keyof T;
+    entityName?: string;
 }
 
 export function GenericTable<T extends Record<string, any>>({
@@ -49,7 +50,8 @@ export function GenericTable<T extends Record<string, any>>({
     onCreate,
     customActions,
     searchPlaceholder = "Buscar...",
-    idField = 'id' as keyof T
+    idField = 'id' as keyof T,
+    entityName
 }: GenericTableProps<T>) {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,7 +106,7 @@ export function GenericTable<T extends Record<string, any>>({
                 <h1 className="h3 fw-bold text-dark m-0">{title}</h1>
                 {(onSave || onCreate) && (
                     <ButtonGeneral
-                        texto="NUEVO"
+                        texto={entityName ? `NUEVO ${entityName.toUpperCase()}` : "NUEVO"}
                         onClick={onCreate || openCreateModal}
                         className="btn-primary"
                     >
@@ -206,7 +208,9 @@ export function GenericTable<T extends Record<string, any>>({
                         <div className="modal-content border-0 shadow-lg">
                             <div className="modal-header bg-dark text-white">
                                 <h5 className="modal-title fw-bold">
-                                    {isEditing ? 'Editar Registro' : 'Nuevo Registro'}
+                                    {isEditing
+                                        ? (entityName ? `Editar ${entityName}` : 'Editar Registro')
+                                        : (entityName ? `Nuevo ${entityName}` : 'Nuevo Registro')}
                                 </h5>
                                 <button type="button" className="btn-close btn-close-white" onClick={closeModal}></button>
                             </div>

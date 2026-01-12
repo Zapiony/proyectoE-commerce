@@ -153,6 +153,7 @@ export default function UsuariosPage() {
                 onDelete={handleDeleteClick}
                 idField="CLI_CEDULA_RUC"
                 searchPlaceholder="Buscar por nombre, correo o cédula..."
+                entityName="Cliente"
             />
 
             <AlertModal

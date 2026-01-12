@@ -177,6 +177,7 @@ export default function ProductosAdminPage() {
         onDelete={handleDeleteClick}
         idField="PRD_CODIGO"
         searchPlaceholder="Buscar por descripción, código o categoría..."
+        entityName="Producto"
       />
 
       <AlertModal

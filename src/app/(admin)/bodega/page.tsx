@@ -150,6 +150,7 @@ export default function BodegaPage() {
                 onDelete={handleDeleteClick}
                 idField="BOD_CODIGO"
                 searchPlaceholder="Buscar por descripción, encargado o código..."
+                entityName="Bodega"
             />
 
             <AlertModal
