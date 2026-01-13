@@ -1,21 +1,25 @@
 import oracledb from 'oracledb';
 
-if (!process.env.ORACLE_USER || !process.env.ORACLE_PASSWORD || !process.env.ORACLE_CONN_STR) {
-  throw new Error('Faltan variables de entorno para Oracle');
-}
-
-const dbConfig: oracledb.ConnectionAttributes = {
-  user: process.env.ORACLE_USER,
-  password: process.env.ORACLE_PASSWORD,
-  connectString: process.env.ORACLE_CONN_STR,
+const dbConfig = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  connectString: process.env.DB_CONNECT_STRING,
 };
 
-// Singleton para obtener conexión
-export async function getConnection(): Promise<oracledb.Connection> {
+export async function openConnection() {
   try {
-    return await oracledb.getConnection(dbConfig);
+    const connection = await oracledb.getConnection(dbConfig);
+    return connection;
   } catch (err) {
-    console.error('Error conectando a Oracle:', err);
+    console.error('[OracleDB] Error obtaining connection:', err);
     throw err;
+  }
+}
+
+export async function closeConnection(connection: oracledb.Connection) {
+  try {
+    await connection.close();
+  } catch (err) {
+    console.error('[OracleDB] Error closing connection:', err);
   }
 }
