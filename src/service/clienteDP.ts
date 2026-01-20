@@ -1,11 +1,18 @@
 'use server';
 
-import { getAllClientes, createCliente, updateCliente, deleteCliente, getClienteByCedula } from '@/lib/models/clienteMD';
 import { ICliente } from '@/types';
 
 export async function deleteClientAction(cedula: string) {
     try {
-        await deleteCliente(cedula);
+        const response = await fetch(`${process.env.API_URL}/clients/${cedula}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            return { success: false, message: data.message || 'Error al eliminar cliente' };
+        }
+
         return { success: true, message: 'Cliente eliminado correctamente' };
     } catch (error) {
         console.error('Error deleting cliente:', error);
@@ -15,7 +22,17 @@ export async function deleteClientAction(cedula: string) {
 
 export async function getClientesAction() {
     try {
-        const clientes = await getAllClientes();
+        const response = await fetch(`${process.env.API_URL}/clients`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const clientes = await response.json();
         return { success: true, data: clientes };
     } catch (error) {
         console.error('Error fetching clientes:', error);
@@ -47,13 +64,19 @@ export async function createClientAction(cliente: ICliente) {
 
         const clientToSave = { ...cliente, CLI_NOMBRE: cliente.CLI_NOMBRE.toUpperCase() };
 
-        const existing = await getClienteByCedula(cliente.CLI_CEDULA_RUC);
-        if (existing) {
-            return { success: false, message: 'El número de cédula/RUC ya se encuentra registrado.' };
+        const response = await fetch(`${process.env.API_URL}/clients`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(clientToSave)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, message: data.message || 'Error al crear cliente' };
         }
 
-        await createCliente(clientToSave);
-        return { success: true, message: 'Cliente creado correctamente', data: clientToSave };
+        return { success: true, message: 'Cliente creado correctamente', data: data };
     } catch (error) {
         console.error('Error creating cliente:', error);
         return { success: false, message: 'Error al crear cliente' };
@@ -69,8 +92,19 @@ export async function updateClientAction(cliente: ICliente) {
 
         const clientToSave = { ...cliente, CLI_NOMBRE: cliente.CLI_NOMBRE.toUpperCase() };
 
-        await updateCliente(clientToSave);
-        return { success: true, message: 'Cliente actualizado correctamente', data: clientToSave };
+        const response = await fetch(`${process.env.API_URL}/clients/${cliente.CLI_CEDULA_RUC}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(clientToSave)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, message: data.message || 'Error al actualizar cliente' };
+        }
+
+        return { success: true, message: 'Cliente actualizado correctamente', data: data };
     } catch (error) {
         console.error('Error updating cliente:', error);
         return { success: false, message: 'Error al actualizar cliente' };

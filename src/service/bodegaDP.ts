@@ -1,6 +1,5 @@
 'use server';
 
-import { getAllBodegas, createBodega, updateBodega, deleteBodega, getBodegaByCodigo } from '@/lib/models/bodegaMD';
 import { IBodega } from '@/types';
 
 function validateBodegaData(bodega: IBodega) {
@@ -19,7 +18,17 @@ function validateBodegaData(bodega: IBodega) {
 
 export async function getBodegasAction() {
     try {
-        const bodegas = await getAllBodegas();
+        const response = await fetch(`${process.env.API_URL}/warehouses`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const bodegas = await response.json();
         return { success: true, data: bodegas };
     } catch (error) {
         console.error('Error fetching bodegas:', error);
@@ -34,7 +43,6 @@ export async function createBodegaAction(bodega: IBodega) {
             return { success: false, message: validationError };
         }
 
-        // Convert to uppercase
         const bodegaToSave = {
             ...bodega,
             BOD_DESCRIPCION: bodega.BOD_DESCRIPCION.toUpperCase(),
@@ -42,13 +50,19 @@ export async function createBodegaAction(bodega: IBodega) {
             BOD_NOMBRE_ENCARGADO: bodega.BOD_NOMBRE_ENCARGADO.toUpperCase()
         };
 
-        const existing = await getBodegaByCodigo(bodega.BOD_CODIGO);
-        if (existing) {
-            return { success: false, message: 'El código de bodega ya se encuentra registrado.' };
+        const response = await fetch(`${process.env.API_URL}/warehouses`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodegaToSave)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, message: data.message || 'Error al crear bodega' };
         }
 
-        await createBodega(bodegaToSave);
-        return { success: true, message: 'Bodega creada correctamente', data: bodegaToSave };
+        return { success: true, message: 'Bodega creada correctamente', data: data };
     } catch (error) {
         console.error('Error creating bodega:', error);
         return { success: false, message: 'Error al crear bodega' };
@@ -69,8 +83,19 @@ export async function updateBodegaAction(bodega: IBodega) {
             BOD_NOMBRE_ENCARGADO: bodega.BOD_NOMBRE_ENCARGADO.toUpperCase()
         };
 
-        await updateBodega(bodegaToSave);
-        return { success: true, message: 'Bodega actualizada correctamente', data: bodegaToSave };
+        const response = await fetch(`${process.env.API_URL}/warehouses/${bodega.BOD_CODIGO}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodegaToSave)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, message: data.message || 'Error al actualizar bodega' };
+        }
+
+        return { success: true, message: 'Bodega actualizada correctamente', data: data };
     } catch (error) {
         console.error('Error updating bodega:', error);
         return { success: false, message: 'Error al actualizar bodega' };
@@ -79,7 +104,15 @@ export async function updateBodegaAction(bodega: IBodega) {
 
 export async function deleteBodegaAction(codigo: string) {
     try {
-        await deleteBodega(codigo);
+        const response = await fetch(`${process.env.API_URL}/warehouses/${codigo}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            return { success: false, message: data.message || 'Error al eliminar bodega' };
+        }
+
         return { success: true, message: 'Bodega eliminada correctamente' };
     } catch (error) {
         console.error('Error deleting bodega:', error);

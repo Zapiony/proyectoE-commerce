@@ -1,6 +1,5 @@
 'use server';
 
-import { getAllProveedores, createProveedor, updateProveedor, deleteProveedor, getProveedorByRuc } from '@/lib/models/proveedorMD';
 import { IProveedor } from '@/types';
 
 function validateProveedorData(proveedor: IProveedor) {
@@ -28,7 +27,28 @@ function validateProveedorData(proveedor: IProveedor) {
 
 export async function getProveedoresAction() {
     try {
-        const proveedores = await getAllProveedores();
+        const response = await fetch(`${process.env.API_URL}/suppliers`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const rawData = await response.json();
+
+        // Map API response to IProveedor
+        const proveedores = rawData.map((item: any) => ({
+            PRV_RUC: item.PRV_RUC,
+            PRV_NOMBRE: item.PRV_NOMBRE || '', // Handle missing field if backend doesn't return it logic
+            PRV_DIRECCION: item.PRV_DIRECCION,
+            PRV_TELEFONO: item.PRV_TELEFONO,
+            PRV_CORREO: item.PRV_CORREO,
+            PRV_RAZON_SOCIAL: item.PRV_RAZON_SOCIAL
+        }));
+
         return { success: true, data: proveedores };
     } catch (error) {
         console.error('Error fetching proveedores:', error);
@@ -46,18 +66,23 @@ export async function createProveedorAction(proveedor: IProveedor) {
         const proveedorToSave = {
             ...proveedor,
             PRV_NOMBRE: proveedor.PRV_NOMBRE.toUpperCase(),
-            PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase(),
             PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase(),
-            PRV_CORREO: proveedor.PRV_CORREO.toLowerCase()
+            PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase()
         };
 
-        const existing = await getProveedorByRuc(proveedor.PRV_RUC);
-        if (existing) {
-            return { success: false, message: 'El RUC ya se encuentra registrado.' };
+        const response = await fetch(`${process.env.API_URL}/suppliers`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proveedorToSave)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, message: data.message || 'Error al crear proveedor' };
         }
 
-        await createProveedor(proveedorToSave);
-        return { success: true, message: 'Proveedor creado correctamente', data: proveedorToSave };
+        return { success: true, message: 'Proveedor creado correctamente', data: data };
     } catch (error) {
         console.error('Error creating proveedor:', error);
         return { success: false, message: 'Error al crear proveedor' };
@@ -74,13 +99,23 @@ export async function updateProveedorAction(proveedor: IProveedor) {
         const proveedorToSave = {
             ...proveedor,
             PRV_NOMBRE: proveedor.PRV_NOMBRE.toUpperCase(),
-            PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase(),
             PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase(),
-            PRV_CORREO: proveedor.PRV_CORREO.toLowerCase()
+            PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase()
         };
 
-        await updateProveedor(proveedorToSave);
-        return { success: true, message: 'Proveedor actualizado correctamente', data: proveedorToSave };
+        const response = await fetch(`${process.env.API_URL}/suppliers/${proveedor.PRV_RUC}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proveedorToSave)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return { success: false, message: data.message || 'Error al actualizar proveedor' };
+        }
+
+        return { success: true, message: 'Proveedor actualizado correctamente', data: data };
     } catch (error) {
         console.error('Error updating proveedor:', error);
         return { success: false, message: 'Error al actualizar proveedor' };
@@ -89,7 +124,15 @@ export async function updateProveedorAction(proveedor: IProveedor) {
 
 export async function deleteProveedorAction(ruc: string) {
     try {
-        await deleteProveedor(ruc);
+        const response = await fetch(`${process.env.API_URL}/suppliers/${ruc}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            return { success: false, message: data.message || 'Error al eliminar proveedor' };
+        }
+
         return { success: true, message: 'Proveedor eliminado correctamente' };
     } catch (error) {
         console.error('Error deleting proveedor:', error);
