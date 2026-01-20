@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getBodegasAction, createBodegaAction, updateBodegaAction, deleteBodegaAction } from '@/actions/bodega-actions';
+import { getBodegasAction, createBodegaAction, updateBodegaAction, deleteBodegaAction } from '@/service/bodegaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { IBodega } from '@/types';

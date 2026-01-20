@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getOrdenesAction, createOrdenAction, recibirPedidoAction, deleteOrdenAction } from '@/actions/orden-actions';
-import { getProveedoresAction } from '@/actions/proveedor-actions';
-import { getProductosAction } from '@/actions/producto-actions';
+import { getOrdenesAction, createOrdenAction, recibirPedidoAction, deleteOrdenAction } from '@/service/ordenDP';
+import { getProveedoresAction } from '@/service/proveedorDP';
+import { getProductosAction } from '@/service/productoDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import ButtonGeneral from '@/components/ui/buttonGeneral';

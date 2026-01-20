@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getProveedoresAction, createProveedorAction, updateProveedorAction, deleteProveedorAction } from '@/actions/proveedor-actions';
+import { getProveedoresAction, createProveedorAction, updateProveedorAction, deleteProveedorAction } from '@/service/proveedorDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { IProveedor } from '@/types';

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getClientesAction, createClientAction, updateClientAction, deleteClientAction } from '@/actions/cliente-actions';
+import { getClientesAction, createClientAction, updateClientAction, deleteClientAction } from '@/service/clienteDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { ICliente } from '@/types';

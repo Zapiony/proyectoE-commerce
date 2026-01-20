@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Input from "@/components/ui/input";
 import styles from './login.module.css';
-import { loginAction } from '@/actions/auth-actions';
+import { loginAction } from '@/service/authDP';
 import { useAuth } from "@/context/auth-context";
 import Logo from '../../../../public/img/logoConLetras.png';
 

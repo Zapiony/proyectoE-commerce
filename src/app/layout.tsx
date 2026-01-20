@@ -7,6 +7,8 @@ import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
 import Logo from './logoSinLetras.png';
 import { AuthProvider } from '@/context/auth-context';
+import { CartProvider } from '@/context/cart-context';
+import SidebarCart from '@/components/layout/sidebar-cart';
 
 const inter = Karla({ subsets: ["latin"] });
 
@@ -30,11 +32,14 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          <Navbar />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <CartProvider>
+            <Navbar />
+            <SidebarCart />
+            <main>
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
         </AuthProvider>
         <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" />
       </body>

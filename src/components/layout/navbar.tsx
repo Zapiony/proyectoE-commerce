@@ -7,7 +7,7 @@ import Logo from '../../../public/img/logoConLetras.png'
 import Boton from '../ui/buttonGeneral';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { useAuth } from '@/context/auth-context';
 
@@ -20,7 +20,8 @@ const Navbar = () => {
     const links = role === 'employee'
         ? [
             { name: 'CLIENTES', href: '/usuario', active: true },
-            { name: 'BODEGAS', href: '/bodega', active: true },
+            { name: 'BODEGAS', href: '/bodega', active:
+                 true },
             { name: 'PROVEEDORES', href: '/proveedor', active: true },
             { name: 'PRODUCTOS', href: '/productosAdmin', active: false },
             { name: 'ORDEN DE COMPRA', href: '/ordenes', active: false },
@@ -61,6 +62,7 @@ const Navbar = () => {
 
                     {/* 3. LADO DERECHO (Acciones) */}
                     <div className="d-flex align-items-center gap-3">
+
                         {!isLogged ? (
                             <Boton texto="Iniciar sesión" onClick={() => router.push('/login')} />
                         ) : (

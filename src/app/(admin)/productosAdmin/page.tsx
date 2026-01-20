@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column, FormOption } from '@/components/admin/generic-table';
-import { getProductosAction, createProductoAction, updateProductoAction, deleteProductoAction } from '@/actions/producto-actions';
-import { getCategoriasAction } from '@/actions/categoria-actions';
+import { getProductosAction, createProductoAction, updateProductoAction, deleteProductoAction } from '@/service/productoDP';
+import { getCategoriasAction } from '@/service/categoriaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { IProducto, ICategoria } from '@/types';
@@ -64,7 +64,7 @@ export default function ProductosAdminPage() {
         if (categoriesResult.success && categoriesResult.data) {
           setCategorias(categoriesResult.data);
           // Map categories to FormOptions
-          const options = categoriesResult.data.map(c => ({
+          const options = categoriesResult.data.map((c: ICategoria) => ({
             value: c.CAT_CODIGO,
             label: `${c.CAT_NOMBRE} (${c.CAT_CODIGO})`
           }));
