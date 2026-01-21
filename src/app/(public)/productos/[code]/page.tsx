@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getProductoByCodigoAction, getProductosAction } from '@/service/productoDP';
-import { IProducto } from '@/types';
+import { IProducto } from "@/service/productoDP";
 import Image from 'next/image';
 import { useCart } from '@/context/cart-context';
 import { useRouter, useParams } from 'next/navigation';
@@ -58,7 +58,7 @@ export default function ProductDetailPage() {
                 <div className="col-md-6 mb-4 mb-md-0">
                     <div className="position-relative bg-light rounded-4 overflow-hidden d-flex align-items-center justify-content-center" style={{ height: '500px' }}>
                         <Image
-                            src="/img/vectorHero.png"
+                            src="/img/imagenProducto.png"
                             alt={product.PRD_DESCRIPCION || ''}
                             fill
                             className="object-fit-contain"
@@ -67,10 +67,10 @@ export default function ProductDetailPage() {
                     {/* Thumbnails placeholder */}
                     <div className="d-flex gap-3 mt-3">
                         <div className="rounded-3 bg-light overflow-hidden position-relative" style={{ width: '80px', height: '80px' }}>
-                            <Image src="/img/vectorHero.png" alt="thumb" fill className="object-fit-cover" />
+                            <Image src="/img/imagenProducto.png" alt="thumb" fill className="object-fit-cover" />
                         </div>
                         <div className="rounded-3 bg-light overflow-hidden position-relative" style={{ width: '80px', height: '80px' }}>
-                            <Image src="/img/vectorHero.png" alt="thumb" fill className="object-fit-cover" />
+                            <Image src="/img/imagenProducto.png" alt="thumb" fill className="object-fit-cover" />
                         </div>
                     </div>
                 </div>

@@ -1,24 +1,14 @@
 'use server';
 
-import { IProducto } from '@/types';
-
-function validateProductoData(producto: IProducto) {
-    if (isNaN(producto.PRD_PRECIO) || producto.PRD_PRECIO < 0) {
-        return 'El precio debe ser un número positivo.';
-    }
-
-    if (isNaN(producto.PRD_COSTO_ADQUISICION) || producto.PRD_COSTO_ADQUISICION < 0) {
-        return 'El costo de adquisición debe ser un número positivo.';
-    }
-
-    if (!producto.PRD_DESCRIPCION || producto.PRD_DESCRIPCION.trim() === '') {
-        return 'La descripción es obligatoria.';
-    }
-
-    return null;
+export interface IProducto {
+    PRD_CODIGO: string;
+    CAT_CODIGO: string;
+    PRD_DESCRIPCION: string;
+    PRD_PRECIO: number;
+    PRD_COSTO_ADQUISICION: number;
 }
 
-export async function getProductosAction() {
+export async function getProducts() {
     try {
         const response = await fetch(`${process.env.API_URL}/products`, {
             method: 'GET',
@@ -32,7 +22,6 @@ export async function getProductosAction() {
 
         const rawData = await response.json();
 
-        // Data already matches IProducto interface based on user feedback
         const productos = rawData.map((item: any) => ({
             PRD_CODIGO: item.PRD_CODIGO,
             CAT_CODIGO: item.CAT_CODIGO,
@@ -48,22 +37,21 @@ export async function getProductosAction() {
     }
 }
 
-export async function getProductoByCodigoAction(codigo: string) {
+export async function getProductByCode(code: string) {
     try {
-        const response = await fetch(`${process.env.API_URL}/products/${codigo}`, {
+        const response = await fetch(`${process.env.API_URL}/products/${code}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             cache: 'no-store'
         });
 
         if (!response.ok) {
-            console.warn(`Producto ${codigo} not found or error.`);
+            console.warn(`Producto ${code} not found or error.`);
             return { success: false, message: 'Producto no encontrado' };
         }
 
         const rawData = await response.json();
 
-        // Data matches IProducto
         const producto = {
             PRD_CODIGO: rawData.PRD_CODIGO,
             CAT_CODIGO: rawData.CAT_CODIGO,
@@ -79,24 +67,24 @@ export async function getProductoByCodigoAction(codigo: string) {
     }
 }
 
-export async function createProductoAction(producto: IProducto) {
+export async function createProduct(product: IProducto) {
     try {
-        const validationError = validateProductoData(producto);
+        const validationError = validateProductData(product);
         if (validationError) {
             return { success: false, message: validationError };
         }
 
-        const productoToSave = {
-            ...producto,
-            PRD_DESCRIPCION: producto.PRD_DESCRIPCION.toUpperCase(),
-            PRD_PRECIO: Number(producto.PRD_PRECIO),
-            PRD_COSTO_ADQUISICION: Number(producto.PRD_COSTO_ADQUISICION)
+        const productToSave = {
+            ...product,
+            PRD_DESCRIPCION: product.PRD_DESCRIPCION.toUpperCase(),
+            PRD_PRECIO: Number(product.PRD_PRECIO),
+            PRD_COSTO_ADQUISICION: Number(product.PRD_COSTO_ADQUISICION)
         };
 
         const response = await fetch(`${process.env.API_URL}/products`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productoToSave)
+            body: JSON.stringify(productToSave)
         });
 
         const data = await response.json();
@@ -112,24 +100,24 @@ export async function createProductoAction(producto: IProducto) {
     }
 }
 
-export async function updateProductoAction(producto: IProducto) {
+export async function updateProduct(product: IProducto) {
     try {
-        const validationError = validateProductoData(producto);
+        const validationError = validateProductData(product);
         if (validationError) {
             return { success: false, message: validationError };
         }
 
-        const productoToSave = {
-            ...producto,
-            PRD_DESCRIPCION: producto.PRD_DESCRIPCION.toUpperCase(),
-            PRD_PRECIO: Number(producto.PRD_PRECIO),
-            PRD_COSTO_ADQUISICION: Number(producto.PRD_COSTO_ADQUISICION)
+        const productToSave = {
+            ...product,
+            PRD_DESCRIPCION: product.PRD_DESCRIPCION.toUpperCase(),
+            PRD_PRECIO: Number(product.PRD_PRECIO),
+            PRD_COSTO_ADQUISICION: Number(product.PRD_COSTO_ADQUISICION)
         };
 
-        const response = await fetch(`${process.env.API_URL}/products/${producto.PRD_CODIGO}`, {
+        const response = await fetch(`${process.env.API_URL}/products/${product.PRD_CODIGO}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productoToSave)
+            body: JSON.stringify(productToSave)
         });
 
         const data = await response.json();
@@ -145,9 +133,9 @@ export async function updateProductoAction(producto: IProducto) {
     }
 }
 
-export async function deleteProductoAction(codigo: string) {
+export async function deleteProduct(code: string) {
     try {
-        const response = await fetch(`${process.env.API_URL}/products/${codigo}`, {
+        const response = await fetch(`${process.env.API_URL}/products/${code}`, {
             method: 'DELETE',
         });
 
@@ -161,4 +149,20 @@ export async function deleteProductoAction(codigo: string) {
         console.error('Error deleting producto:', error);
         return { success: false, message: 'Error al eliminar producto' };
     }
+}
+
+function validateProductData(product: IProducto) {
+    if (isNaN(product.PRD_PRECIO) || product.PRD_PRECIO < 0) {
+        return 'El precio debe ser un número positivo.';
+    }
+
+    if (isNaN(product.PRD_COSTO_ADQUISICION) || product.PRD_COSTO_ADQUISICION < 0) {
+        return 'El costo de adquisición debe ser un número positivo.';
+    }
+
+    if (!product.PRD_DESCRIPCION || product.PRD_DESCRIPCION.trim() === '') {
+        return 'La descripción es obligatoria.';
+    }
+
+    return null;
 }

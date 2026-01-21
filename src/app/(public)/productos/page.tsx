@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useEffect, useState } from 'react';
 import { getProductosAction } from '@/service/productoDP';
 import { getCategoriasAction } from '@/service/categoriaDP';
-import { IProducto, ICategoria } from '@/types';
+import { ICategoria } from "@/service/categoriaDP";
+import { IProducto } from "@/service/productoDP";
 import Link from 'next/link';
 import { useCart } from '@/context/cart-context';
 import { useAuth } from '@/context/auth-context';
@@ -71,7 +72,7 @@ export default function ProductosPage() {
   if (loading) return <div className="container mt-5 text-center">Cargando productos...</div>;
 
   return (
-    <div className="container py-4">
+    <div className="p-4">
       {/* Search Bar & Cart */}
       <div className="row mb-4 align-items-center">
         <div className="col-10 col-md-11">
@@ -94,7 +95,7 @@ export default function ProductosPage() {
         {user && (
           <div className="col-2 col-md-1 d-flex justify-content-center">
             <button
-              className="btn btn-dark rounded-circle position-relative d-flex align-items-center justify-content-center shadow-lg"
+              className="btn btn-dark rounded-circle position-relative d-flex align-items-center justify-content-center"
               style={{ width: '55px', height: '55px' }}
               onClick={toggleCart}
             >
@@ -144,19 +145,17 @@ export default function ProductosPage() {
             {filteredProducts.map((product) => (
               <div key={product.PRD_CODIGO} className="col">
                 <div
-                  className="card h-100 shadow-sm border-0 rounded-4 overflow-hidden cursor-pointer product-card-hover"
+                  className="card h-100 border rounded-4 overflow-hidden cursor-pointer product-card-hover"
                   onClick={() => handleProductClick(product.PRD_CODIGO)}
                   style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
                 >
                   <div className="position-relative w-100 bg-light d-flex align-items-center justify-content-center" style={{ height: '250px' }}>
-                    {/* Placeholder image regarding API data */}
                     <div className="text-center p-4">
-                      {/* We can use a default image or vectorHero */}
                       <Image
-                        src="/img/vectorHero.png"
+                        src="/img/imagenProducto.png"
                         alt={product.PRD_DESCRIPCION}
-                        width={150}
-                        height={150}
+                        width={200}
+                        height={200}
                         className="object-fit-contain"
                       />
                     </div>
