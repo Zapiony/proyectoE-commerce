@@ -1,8 +1,21 @@
 'use server';
 
-import { IOrdenCompra, IDetalleOrdenCompra } from '@/types';
+export interface IOrdenCompra {
+    ORD_CODIGO?: number; 
+    PRV_RUC: string;
+    PRV_NOMBRE?: string; 
+    ORD_FECHA_ENTREGA: Date | string;
+    ORD_ESTADO: string;
+}
 
-export async function getOrdenesAction() {
+export interface IDetalleOrdenCompra {
+    ORD_CODIGO?: number;
+    PRD_CODIGO: string;
+    DET_ORD_COMPRA_CANTIDAD: number;
+    DET_ORD_COMPRA_COSTO_UNITARIO: number;
+}
+
+export async function getOrdenes() {
     try {
         const response = await fetch(`${process.env.API_URL}/purchase-orders`, {
             method: 'GET',
@@ -22,7 +35,7 @@ export async function getOrdenesAction() {
     }
 }
 
-export async function createOrdenAction(orden: IOrdenCompra, detalles: IDetalleOrdenCompra[]) {
+export async function createOrden(orden: IOrdenCompra, detalles: IDetalleOrdenCompra[]) {
     try {
         if (!orden.PRV_RUC) return { success: false, message: 'Seleccione un proveedor.' };
         if (!orden.ORD_FECHA_ENTREGA) return { success: false, message: 'Ingrese la fecha de entrega.' };
@@ -57,7 +70,7 @@ export async function createOrdenAction(orden: IOrdenCompra, detalles: IDetalleO
     }
 }
 
-export async function recibirPedidoAction(ordCodigo: number) {
+export async function recibirPedido(ordCodigo: number) {
     try {
         const response = await fetch(`${process.env.API_URL}/purchase-orders/${ordCodigo}/receive`, {
             method: 'PATCH',
@@ -77,7 +90,7 @@ export async function recibirPedidoAction(ordCodigo: number) {
     }
 }
 
-export async function deleteOrdenAction(ordCodigo: number) {
+export async function deleteOrden(ordCodigo: number) {
     try {
         const response = await fetch(`${process.env.API_URL}/purchase-orders/${ordCodigo}`, {
             method: 'DELETE',

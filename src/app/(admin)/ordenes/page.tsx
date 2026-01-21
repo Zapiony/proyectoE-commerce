@@ -9,7 +9,10 @@ import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import ButtonGeneral from '@/components/ui/buttonGeneral';
 import Input from '@/components/ui/input';
-import { IOrdenCompra, IProveedor, IProducto, IDetalleOrdenCompra } from '@/types';
+import { IDetalleOrdenCompra } from "@/service/ordenDP";
+import { IOrdenCompra } from "@/service/ordenDP";
+import { IProducto } from "@/service/productoDP";
+import { IProveedor } from "@/service/proveedorDP";
 
 export default function OrdenesPage() {
     const [data, setData] = useState<IOrdenCompra[]>([]);
