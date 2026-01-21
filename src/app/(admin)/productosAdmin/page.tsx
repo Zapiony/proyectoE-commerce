@@ -6,7 +6,8 @@ import { getProductosAction, createProductoAction, updateProductoAction, deleteP
 import { getCategoriasAction } from '@/service/categoriaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
-import { IProducto, ICategoria } from '@/types';
+import { ICategoria } from "@/service/categoriaDP";
+import { IProducto } from "@/service/productoDP";
 
 export default function ProductosAdminPage() {
   const [data, setData] = useState<IProducto[]>([]);

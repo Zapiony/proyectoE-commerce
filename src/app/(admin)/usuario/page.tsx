@@ -5,7 +5,7 @@ import { GenericTable, Column } from '@/components/admin/generic-table';
 import { getClientesAction, createClientAction, updateClientAction, deleteClientAction } from '@/service/clienteDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
-import { ICliente } from '@/types';
+import { ICliente } from "@/service/clienteDP";
 
 export default function UsuariosPage() {
     const [data, setData] = useState<ICliente[]>([]);

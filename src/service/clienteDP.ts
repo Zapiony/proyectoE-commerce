@@ -1,61 +1,13 @@
 'use server';
 
-import { ICliente } from '@/types';
-
-export async function deleteClientAction(cedula: string) {
-    try {
-        const response = await fetch(`${process.env.API_URL}/clients/${cedula}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            return { success: false, message: data.message || 'Error al eliminar cliente' };
-        }
-
-        return { success: true, message: 'Cliente eliminado correctamente' };
-    } catch (error) {
-        console.error('Error deleting cliente:', error);
-        return { success: false, message: 'Error al eliminar cliente' };
-    }
+export interface ICliente {
+    CLI_CEDULA_RUC: string;
+    CLI_NOMBRE: string;
+    CLI_TELEFONO: string;
+    CLI_CORREO: string;
 }
 
-export async function getClientesAction() {
-    try {
-        const response = await fetch(`${process.env.API_URL}/clients`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            cache: 'no-store'
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-
-        const clientes = await response.json();
-        return { success: true, data: clientes };
-    } catch (error) {
-        console.error('Error fetching clientes:', error);
-        return { success: false, message: 'Error al obtener clientes' };
-    }
-}
-
-function validateClientData(cliente: ICliente) {
-    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!nameRegex.test(cliente.CLI_NOMBRE)) {
-        return 'El nombre no puede contener números ni caracteres especiales.';
-    }
-    const phoneRegex = /^\d+$/;
-    if (!phoneRegex.test(cliente.CLI_TELEFONO)) {
-        return 'El teléfono debe contener solo números enteros positivos.';
-    }
-    if (!phoneRegex.test(cliente.CLI_CEDULA_RUC)) {
-        return 'La Cédula/RUC debe contener solo números.';
-    }
-    return null;
-}
-
-export async function createClientAction(cliente: ICliente) {
+export async function createClient(cliente: ICliente) {
     try {
         const validationError = validateClientData(cliente);
         if (validationError) {
@@ -83,7 +35,27 @@ export async function createClientAction(cliente: ICliente) {
     }
 }
 
-export async function updateClientAction(cliente: ICliente) {
+export async function getClientes() {
+    try {
+        const response = await fetch(`${process.env.API_URL}/clients`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const clientes = await response.json();
+        return { success: true, data: clientes };
+    } catch (error) {
+        console.error('Error fetching clientes:', error);
+        return { success: false, message: 'Error al obtener clientes' };
+    }
+}
+
+export async function updateClient(cliente: ICliente) {
     try {
         const validationError = validateClientData(cliente);
         if (validationError) {
@@ -109,4 +81,72 @@ export async function updateClientAction(cliente: ICliente) {
         console.error('Error updating cliente:', error);
         return { success: false, message: 'Error al actualizar cliente' };
     }
+}
+
+export async function deleteClient(cedula: string) {
+    try {
+        const response = await fetch(`${process.env.API_URL}/clients/${cedula}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            return { success: false, message: data.message || 'Error al eliminar cliente' };
+        }
+
+        return { success: true, message: 'Cliente eliminado correctamente' };
+    } catch (error) {
+        console.error('Error deleting cliente:', error);
+        return { success: false, message: 'Error al eliminar cliente' };
+    }
+}
+
+export async function getClientByCedula(cedula: string) {
+    try {
+        const res = await fetch(`${process.env.API_URL}/clients/${cedula}`, {
+            cache: 'no-store',
+        });
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (e) {
+        console.error('Error fetching client by cedula:', e);
+        return null;
+    }
+}
+
+export async function getClientDetails(username: string) {
+    try {
+        const res = await fetch(`${process.env.API_URL}/clients`, {
+            cache: 'no-store',
+        });
+
+        if (!res.ok) return null;
+
+        const clients = await res.json();
+
+        // Find client where email matches the username
+        const found = clients.find((c: any) => (c.CLI_CORREO && c.CLI_CORREO.toLowerCase().includes(username.toLowerCase())) ||
+            (c.CLI_NOMBRE && c.CLI_NOMBRE.toLowerCase().includes(username.toLowerCase()))
+        );
+
+        return found || null;
+    } catch (e) {
+        console.error('Error fetching client details:', e);
+        return null;
+    }
+}
+
+function validateClientData(cliente: ICliente) {
+    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!nameRegex.test(cliente.CLI_NOMBRE)) {
+        return 'El nombre no puede contener números ni caracteres especiales.';
+    }
+    const phoneRegex = /^\d+$/;
+    if (!phoneRegex.test(cliente.CLI_TELEFONO)) {
+        return 'El teléfono debe contener solo números enteros positivos.';
+    }
+    if (!phoneRegex.test(cliente.CLI_CEDULA_RUC)) {
+        return 'La Cédula/RUC debe contener solo números.';
+    }
+    return null;
 }
