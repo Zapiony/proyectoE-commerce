@@ -20,11 +20,11 @@ const Navbar = () => {
     const links = role === 'employee'
         ? [
             { name: 'CLIENTES', href: '/usuario', active: true },
-            { name: 'BODEGAS', href: '/bodega', active:
-                 true },
+            { name: 'BODEGAS', href: '/bodega', active: true },
             { name: 'PROVEEDORES', href: '/proveedor', active: true },
             { name: 'PRODUCTOS', href: '/productosAdmin', active: false },
             { name: 'ORDEN DE COMPRA', href: '/ordenes', active: false },
+            { name: 'FACTURAS', href: '/facturas', active: false },
         ]
         : [
             { name: 'INICIO', href: '/', active: true },
@@ -67,11 +67,11 @@ const Navbar = () => {
                             <Boton texto="Iniciar sesión" onClick={() => router.push('/login')} />
                         ) : (
                             <>
-                                <span className="text-white small me-2">Hola, {user?.name || 'Usuario'}</span>
+                                <span className="text-white small me-2">Hola, {user?.username || user?.name || 'Usuario'}</span>
                                 {/* Icono Usuario */}
                                 <button className="btn btn-dark rounded-circle d-flex align-items-center justify-content-center"
                                     style={{ width: '40px', height: '40px' }}>
-                                    <i className="bi bi-person-circle fs-4"></i>
+                                    <i className="fa-solid fa-user fs-5"></i>
                                 </button>
                                 <button onClick={logout} className="btn btn-outline-light btn-sm ms-2">
                                     Salir

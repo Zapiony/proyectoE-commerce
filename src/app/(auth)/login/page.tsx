@@ -82,6 +82,7 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              labelClassName="text-light"
             />
             <Input
               label="Contraseña"
@@ -113,15 +114,11 @@ export default function LoginPage() {
             {/* Placeholder for the tech image. Since I don't have the file, 
                 I will use a standard placeholder or just leave the yellow box. */}
             <div style={{ width: '100%', height: '250px', position: 'relative' }}>
-              {/* 
-                  TODO: Replace this with the actual tech products image.
-                  For now, I'll use a Next.js Image with a placehold.co or reusing vectorHero
-                */}
               <Image
-                src="/img/vectorHero.png"
+                src="/img/logoPrincipal.png"
                 alt="Productos Tech"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </div>

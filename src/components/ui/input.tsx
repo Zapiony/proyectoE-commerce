@@ -8,7 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const Input = ({ label, className = '', labelClassName = 'text-white', ...props }: InputProps) => {
     return (
         <div className="text-start">
-            <label className={`form-label fw-bold small mb-1 ${labelClassName} text-body`}>
+            <label className={`form-label fw-bold small mb-1 ${labelClassName}`}>
                 {label}
             </label>
             <input

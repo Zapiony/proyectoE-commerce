@@ -1,6 +1,12 @@
 'use server';
 
-export async function getCategoriasAction() {
+export interface ICategoria {
+    CAT_CODIGO: string;
+    CAT_NOMBRE: string;
+    CAT_DESCRIPCION: string;
+}
+
+export async function getCategorias() {
     try {
         const response = await fetch(`${process.env.API_URL}/categories`, {
             method: 'GET',

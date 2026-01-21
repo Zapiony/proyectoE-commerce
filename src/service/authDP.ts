@@ -28,6 +28,7 @@ export async function loginAction(username: string, password: string, type: 'cli
         return { success: false, message: 'Error de servidor al intentar iniciar sesión' };
     }
 }
+
 export async function registerAction(userData: any) {
     try {
         const payload = {

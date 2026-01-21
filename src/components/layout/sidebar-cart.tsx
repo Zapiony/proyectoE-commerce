@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { useCart } from '@/context/cart-context';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import CheckoutModal from '../cart/checkout-modal';
 
 export default function SidebarCart() {
     const { isCartOpen, toggleCart, cart, removeFromCart, total } = useCart();
+    const [showCheckout, setShowCheckout] = useState(false);
     const router = useRouter();
 
     if (!isCartOpen) return null;
@@ -36,10 +39,10 @@ export default function SidebarCart() {
                         <p className="text-center text-muted mt-5">Tu carrito está vacío.</p>
                     ) : (
                         cart.map((item) => (
-                            <div key={item.PRD_CODIGO} className="d-flex mb-3 p-3 bg-dark text-white rounded align-items-center">
+                            <div key={item.PRD_CODIGO} className="d-flex mb-3 p-3 bg-secondary text-white rounded align-items-center">
                                 <div className="me-3 position-relative" style={{ width: '80px', height: '60px' }}>
                                     <Image
-                                        src="/img/vectorHero.png" // Placeholder image
+                                        src="/img/logoPrincipal.png"
                                         alt={item.PRD_DESCRIPCION}
                                         fill
                                         className="rounded object-fit-cover"
@@ -53,7 +56,7 @@ export default function SidebarCart() {
                                 <div className="d-flex flex-column align-items-end ms-2">
                                     <button
                                         onClick={() => removeFromCart(item.PRD_CODIGO)}
-                                        className="btn btn-danger btn-sm rounded-pill px-3 py-0"
+                                        className="btn btn-danger btn-sm rounded-pill px-2 py-1"
                                         style={{ fontSize: '0.75rem' }}
                                     >
                                         Eliminar producto
@@ -71,13 +74,19 @@ export default function SidebarCart() {
                     </div>
                     <button
                         className="btn btn-dark w-100 py-3 fw-bold rounded-3"
-                        onClick={() => alert('Ir a pagar...')}
+                        onClick={() => setShowCheckout(true)}
                         disabled={cart.length === 0}
                     >
                         Pagar
                     </button>
                 </div>
             </div>
+
+            <CheckoutModal
+                isOpen={showCheckout}
+                onClose={() => setShowCheckout(false)}
+                total={total}
+            />
         </>
     );
 }
