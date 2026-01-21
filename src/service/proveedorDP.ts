@@ -1,31 +1,15 @@
 'use server';
 
-import { IProveedor } from '@/types';
-
-function validateProveedorData(proveedor: IProveedor) {
-    const phoneRegex = /^\d+$/;
-    if (!phoneRegex.test(proveedor.PRV_TELEFONO)) {
-        return 'El teléfono debe contener solo números enteros positivos.';
-    }
-
-    if (!phoneRegex.test(proveedor.PRV_RUC)) {
-        return 'El RUC debe contener solo números.';
-    }
-
-    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!nameRegex.test(proveedor.PRV_NOMBRE)) {
-        return 'El nombre de contacto no puede contener números ni caracteres especiales.';
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(proveedor.PRV_CORREO)) {
-        return 'El correo electrónico no es válido.';
-    }
-
-    return null;
+export interface IProveedor {
+    PRV_RUC: string;
+    PRV_NOMBRE: string;
+    PRV_DIRECCION: string;
+    PRV_TELEFONO: string;
+    PRV_CORREO: string;
+    PRV_RAZON_SOCIAL: string;
 }
 
-export async function getProveedoresAction() {
+export async function getSuppliers() {
     try {
         const response = await fetch(`${process.env.API_URL}/suppliers`, {
             method: 'GET',
@@ -39,41 +23,40 @@ export async function getProveedoresAction() {
 
         const rawData = await response.json();
 
-        // Map API response to IProveedor
-        const proveedores = rawData.map((item: any) => ({
+        const suppliers = rawData.map((item: any) => ({
             PRV_RUC: item.PRV_RUC,
-            PRV_NOMBRE: item.PRV_NOMBRE || '', // Handle missing field if backend doesn't return it logic
+            PRV_NOMBRE: item.PRV_NOMBRE || '',
             PRV_DIRECCION: item.PRV_DIRECCION,
             PRV_TELEFONO: item.PRV_TELEFONO,
             PRV_CORREO: item.PRV_CORREO,
             PRV_RAZON_SOCIAL: item.PRV_RAZON_SOCIAL
         }));
 
-        return { success: true, data: proveedores };
+        return { success: true, data: suppliers };
     } catch (error) {
-        console.error('Error fetching proveedores:', error);
-        return { success: false, message: 'Error al obtener proveedores' };
+        console.error('Error fetching suppliers:', error);
+        return { success: false, message: 'Error al obtener suppliers' };
     }
 }
 
-export async function createProveedorAction(proveedor: IProveedor) {
+export async function createSupplier(supplier: IProveedor) {
     try {
-        const validationError = validateProveedorData(proveedor);
+        const validationError = validateProveedorData(supplier);
         if (validationError) {
             return { success: false, message: validationError };
         }
 
-        const proveedorToSave = {
-            ...proveedor,
-            PRV_NOMBRE: proveedor.PRV_NOMBRE.toUpperCase(),
-            PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase(),
-            PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase()
+        const supplierToSave = {
+            ...supplier,
+            PRV_NOMBRE: supplier.PRV_NOMBRE.toUpperCase(),
+            PRV_RAZON_SOCIAL: supplier.PRV_RAZON_SOCIAL.toUpperCase(),
+            PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase()
         };
 
         const response = await fetch(`${process.env.API_URL}/suppliers`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(proveedorToSave)
+            body: JSON.stringify(supplierToSave)
         });
 
         const data = await response.json();
@@ -89,24 +72,24 @@ export async function createProveedorAction(proveedor: IProveedor) {
     }
 }
 
-export async function updateProveedorAction(proveedor: IProveedor) {
+export async function updateSupplier(supplier: IProveedor) {
     try {
-        const validationError = validateProveedorData(proveedor);
+        const validationError = validateProveedorData(supplier);
         if (validationError) {
             return { success: false, message: validationError };
         }
 
-        const proveedorToSave = {
-            ...proveedor,
-            PRV_NOMBRE: proveedor.PRV_NOMBRE.toUpperCase(),
-            PRV_RAZON_SOCIAL: proveedor.PRV_RAZON_SOCIAL.toUpperCase(),
-            PRV_DIRECCION: proveedor.PRV_DIRECCION.toUpperCase()
+        const supplierToSave = {
+            ...supplier,
+            PRV_NOMBRE: supplier.PRV_NOMBRE.toUpperCase(),
+            PRV_RAZON_SOCIAL: supplier.PRV_RAZON_SOCIAL.toUpperCase(),
+            PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase()
         };
 
-        const response = await fetch(`${process.env.API_URL}/suppliers/${proveedor.PRV_RUC}`, {
+        const response = await fetch(`${process.env.API_URL}/suppliers/${supplier.PRV_RUC}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(proveedorToSave)
+            body: JSON.stringify(supplierToSave)
         });
 
         const data = await response.json();
@@ -122,7 +105,7 @@ export async function updateProveedorAction(proveedor: IProveedor) {
     }
 }
 
-export async function deleteProveedorAction(ruc: string) {
+export async function deleteSupplier(ruc: string) {
     try {
         const response = await fetch(`${process.env.API_URL}/suppliers/${ruc}`, {
             method: 'DELETE',
@@ -138,4 +121,27 @@ export async function deleteProveedorAction(ruc: string) {
         console.error('Error deleting proveedor:', error);
         return { success: false, message: 'Error al eliminar proveedor' };
     }
+}
+
+function validateProveedorData(supplier: IProveedor) {
+    const phoneRegex = /^\d+$/;
+    if (!phoneRegex.test(supplier.PRV_TELEFONO)) {
+        return 'El teléfono debe contener solo números enteros positivos.';
+    }
+
+    if (!phoneRegex.test(supplier.PRV_RUC)) {
+        return 'El RUC debe contener solo números.';
+    }
+
+    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!nameRegex.test(supplier.PRV_NOMBRE)) {
+        return 'El nombre de contacto no puede contener números ni caracteres especiales.';
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(supplier.PRV_CORREO)) {
+        return 'El correo electrónico no es válido.';
+    }
+
+    return null;
 }
