@@ -1,6 +1,12 @@
 'use server';
 
-import { IBodega } from '@/types';
+export interface IBodega {
+    BOD_CODIGO: string;
+    BOD_DESCRIPCION: string;
+    BOD_DIRECCION: string;
+    BOD_NOMBRE_ENCARGADO: string;
+    BOD_TELEFONO_ENCARGADO: string;
+}
 
 function validateBodegaData(bodega: IBodega) {
     const phoneRegex = /^\d+$/;

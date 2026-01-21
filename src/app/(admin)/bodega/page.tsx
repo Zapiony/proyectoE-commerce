@@ -5,7 +5,7 @@ import { GenericTable, Column } from '@/components/admin/generic-table';
 import { getBodegasAction, createBodegaAction, updateBodegaAction, deleteBodegaAction } from '@/service/bodegaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
-import { IBodega } from '@/types';
+import { IBodega } from "@/service/bodegaDP";
 
 export default function BodegaPage() {
     const [data, setData] = useState<IBodega[]>([]);
