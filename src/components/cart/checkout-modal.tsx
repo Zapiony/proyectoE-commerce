@@ -5,7 +5,7 @@ import Input from "@/components/ui/input";
 import { useAuth } from '@/context/auth-context';
 import { checkout } from '@/service/carritoComprasDP';
 import { getClientByCedula } from "@/service/clienteDP";
-import { useCart } from '@/context/cart-context';
+import { useCart } from '@/context/cart';
 
 interface CheckoutModalProps {
     isOpen: boolean;
@@ -98,52 +98,27 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
     const [otherClientData, setOtherClientData] = useState<any>(null); // Search User Data
     const [searchLoading, setSearchLoading] = useState(false);
 
-    // Initial fetch/set of client data
     useEffect(() => {
-        if (user) {
-            console.log("CheckoutModal: Processing Context User:", user);
+        // Enforce using TOKEN only to get fresh data
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : undefined;
 
-            const nestedUser = user.user || user;
-            const contextId = nestedUser.CLI_CEDULA_RUC || user.CLI_CEDULA_RUC ||
-                nestedUser.identification || user.identification ||
-                nestedUser.id || user.id;
-
-            // 1. Direct ID available in Context
-            if (contextId) {
-                console.log("CheckoutModal: Found ID in context", contextId);
-                const mappedClient = {
-                    CLI_CEDULA_RUC: contextId,
-                    CLI_NOMBRE: nestedUser.name || nestedUser.username || user.name || user.username || 'Cliente',
-                    CLI_CORREO: nestedUser.email || user.email || 'No registrado',
-                    ...nestedUser,
-                    ...user
-                };
-                setClientData(mappedClient);
-                setCedulaFactura(mappedClient.CLI_CEDULA_RUC || '');
-                return;
-            }
-
-            // 2. Fallback: Fetch by username/email
-            const uName = nestedUser.email || nestedUser.username || nestedUser.name || user.email || user.username || user.name;
-            console.log("CheckoutModal: No ID in context, attempting fetch with:", uName);
-
-            if (uName) {
-                import('@/service/carritoComprasDP').then(mod => {
-                    if (mod.getClientDetails) {
-                        mod.getClientDetails(uName).then(data => {
-                            console.log("CheckoutModal: Fetch result:", data);
-                            if (data) {
-                                setClientData(data);
-                                setCedulaFactura(data.CLI_CEDULA_RUC || '');
-                            } else {
-                                console.warn("CheckoutModal: Client details not found for", uName);
-                            }
-                        }).catch(err => console.error("CheckoutModal: Fetch error", err));
+        if (token) {
+            console.log("CheckoutModal: Fetching fresh client data using token...");
+            import('@/service/carritoComprasDP').then(mod => {
+                mod.getClientDetails(token).then(data => {
+                    console.log("CheckoutModal: Fetch result:", data);
+                    if (data) {
+                        setClientData(data);
+                        setCedulaFactura(data.CLI_CEDULA_RUC || '');
+                    } else {
+                        console.warn("CheckoutModal: Could not resolve client data from token.");
                     }
-                });
-            }
+                }).catch(err => console.error("CheckoutModal: Fetch error", err));
+            });
+        } else {
+            console.warn("CheckoutModal: No token found in localStorage.");
         }
-    }, [user]);
+    }, [user]); // Re-run if user context changes (e.g. login/logout) but ignore internal user object properties
 
     if (!isOpen) return null;
 
@@ -151,10 +126,12 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
     const getCedula = (u: any) => {
         if (!u) return undefined;
         // Prioritize explicit DB columns if present
+        if (u.cedula) return u.cedula;
         if (u.CLI_CEDULA_RUC) return u.CLI_CEDULA_RUC;
         if (u.identification) return u.identification;
         if (u.id) return u.id;
         if (u.user) {
+            if (u.user.cedula) return u.user.cedula;
             if (u.user.CLI_CEDULA_RUC) return u.user.CLI_CEDULA_RUC;
             if (u.user.identification) return u.user.identification;
             if (u.user.id) return u.user.id;
@@ -289,7 +266,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             <div className="bg-white rounded-4 p-4 shadow-lg position-relative" style={{ width: '90%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
                 <button
                     onClick={onClose}
-                    className="btn btn-sm btn-light position-absolute top-0 end-0 m-3 rounded-circle"
+                    className="btn btn-sm text-white position-absolute top-0 end-0 m-3 rounded-circle"
                 >
                     <i className="fa-solid fa-xmark"></i>
                 </button>
@@ -445,8 +422,18 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                             )}
 
                             <div className="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                <h5 className="fw-bold m-0">Subtotal:</h5>
+                                <h4 className="fw-bold text-primary m-0">${(total).toFixed(2)}</h4>
+                            </div>
+
+                            <div className="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                <h5 className="fw-bold m-0">IVA:</h5>
+                                <h4 className="fw-bold text-primary m-0">${(total*0.15).toFixed(2)}</h4>
+                            </div>
+
+                            <div className="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                                 <h5 className="fw-bold m-0">Total a Pagar:</h5>
-                                <h4 className="fw-bold text-primary m-0">${total.toFixed(2)}</h4>
+                                <h4 className="fw-bold text-primary m-0">${(total*1.15).toFixed(2)}</h4>
                             </div>
 
                             {error && <div className="alert alert-danger mt-3 py-2 small text-center">{error}</div>}

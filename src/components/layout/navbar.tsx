@@ -5,11 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Logo from '../../../public/img/logoConLetras.png'
 import Boton from '../ui/buttonGeneral';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-
 import { useAuth } from '@/context/auth-context';
+import UserProfileMenu from '../ui/userProfile';
 
 const Navbar = () => {
     const router = useRouter();
@@ -66,17 +63,7 @@ const Navbar = () => {
                         {!isLogged ? (
                             <Boton texto="Iniciar sesión" onClick={() => router.push('/login')} />
                         ) : (
-                            <>
-                                <span className="text-white small me-2">Hola, {user?.username || user?.name || 'Usuario'}</span>
-                                {/* Icono Usuario */}
-                                <button className="btn btn-dark rounded-circle d-flex align-items-center justify-content-center"
-                                    style={{ width: '40px', height: '40px' }}>
-                                    <i className="fa-solid fa-user fs-5"></i>
-                                </button>
-                                <button onClick={logout} className="btn btn-outline-light btn-sm ms-2">
-                                    Salir
-                                </button>
-                            </>
+                            <UserProfileMenu user={user} onLogout={logout} />
                         )}
                     </div>
 

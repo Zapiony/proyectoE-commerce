@@ -1,31 +1,38 @@
 'use client';
 
 import { useState } from 'react';
-import { useCart } from '@/context/cart-context';
+import { useCart } from '@/context/cart';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import CheckoutModal from '../cart/checkout-modal';
+import CheckoutModal from './checkout-modal';
 
 export default function SidebarCart() {
     const { isCartOpen, toggleCart, cart, removeFromCart, total } = useCart();
     const [showCheckout, setShowCheckout] = useState(false);
     const router = useRouter();
 
-    if (!isCartOpen) return null;
-
     return (
         <>
             {/* Overlay */}
             <div
-                className="position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50"
-                style={{ zIndex: 1040 }}
+                className={`position-fixed top-0 start-0 w-100 h-100 bg-dark ${isCartOpen ? 'opacity-50' : 'opacity-0'}`}
+                style={{
+                    zIndex: 1040,
+                    transition: 'opacity 0.3s ease-in-out',
+                    pointerEvents: isCartOpen ? 'auto' : 'none'
+                }}
                 onClick={toggleCart}
             ></div>
 
             {/* Sidebar */}
             <div
                 className="position-fixed top-0 end-0 h-100 bg-white shadow-lg p-4 d-flex flex-column"
-                style={{ width: '400px', zIndex: 1050, transition: 'transform 0.3s ease-in-out' }}
+                style={{
+                    width: '400px',
+                    zIndex: 1050,
+                    transition: 'transform 0.3s ease-in-out',
+                    transform: isCartOpen ? 'translateX(0)' : 'translateX(100%)'
+                }}
             >
                 <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                     <h4 className="fw-bold m-0">Carrito de compras</h4>
