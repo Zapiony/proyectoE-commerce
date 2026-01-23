@@ -114,25 +114,29 @@ export async function getClientByCedula(cedula: string) {
     }
 }
 
-export async function getClientDetails(username: string) {
+export async function getClientDetails(token: string) {
     try {
-        const res = await fetch(`${process.env.API_URL}/clients`, {
-            cache: 'no-store',
+        console.log("getClientDetails: Fetching profile with token...");
+        const res = await fetch(`${process.env.API_URL}/auth/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+            cache: 'no-store'
         });
-
-        if (!res.ok) return null;
-
-        const clients = await res.json();
-
-        // Find client where email matches the username
-        const found = clients.find((c: any) => (c.CLI_CORREO && c.CLI_CORREO.toLowerCase().includes(username.toLowerCase())) ||
-            (c.CLI_NOMBRE && c.CLI_NOMBRE.toLowerCase().includes(username.toLowerCase()))
-        );
-
-        return found || null;
+        if (res.ok) {
+            const data = await res.json();
+            if (data.user) {
+                const u = data.user;
+                // Map user profile to ICliente structure if needed, or return compatible object
+                // ICliente requires: CLI_CEDULA_RUC, CLI_NOMBRE, CLI_TELEFONO, CLI_CORREO
+                return {
+                    CLI_CEDULA_RUC: u.cedula || u.CLI_CEDULA_RUC,
+                    CLI_NOMBRE: u.name || u.CLI_NOMBRE,
+                    CLI_TELEFONO: u.telephone || u.CLI_TELEFONO || '0000000000',
+                    CLI_CORREO: u.email || u.CLI_CORREO
+                };
+            }
+        }
     } catch (e) {
-        console.error('Error fetching client details:', e);
-        return null;
+        console.error("getClientDetails: Token fetch failed, falling back to search.", e);
     }
 }
 

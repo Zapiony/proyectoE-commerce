@@ -3,9 +3,13 @@
 import { getClientDetails } from "./clienteDP";
 export { getClientDetails };
 
+// Verify API URL loaded (Server Side)
+const API_URL = process.env.API_URL;
+if (!API_URL) console.warn("WARNING: process.env.API_URL is undefined in carritoComprasDP.ts");
+
 export async function getCart(identification: string) {
     try {
-        const res = await fetch(`${process.env.API_URL}/cart/${identification}`, {
+        const res = await fetch(`${API_URL}/cart/${identification}`, {
             cache: 'no-store',
         });
 
@@ -27,9 +31,8 @@ export async function addToCart(identification: string, productId: string, quant
             PRD_CODIGO: productId,
             cantidad: quantity
         };
-        console.log("addToCart: Sending payload:", payload, "to", `${process.env.API_URL}/cart/${identification}/add`);
-
-        const res = await fetch(`${process.env.API_URL}/cart/${identification}/add`, {
+        console.log("addToCart: Sending payload:", payload, "to", `${API_URL}/cart/${identification}/add`);
+        const res = await fetch(`${API_URL}/cart/${identification}/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -50,7 +53,7 @@ export async function addToCart(identification: string, productId: string, quant
 
 export async function removeFromCart(identification: string, productId: string) {
     try {
-        const res = await fetch(`${process.env.API_URL}/cart/${identification}/remove/${productId}`, {
+        const res = await fetch(`${API_URL}/cart/${identification}/remove/${productId}`, {
             method: 'DELETE',
         });
 
@@ -65,14 +68,14 @@ export async function removeFromCart(identification: string, productId: string) 
     }
 }
 
-export async function getClientIdentification(username: string) {
-    const client = await getClientDetails(username);
+export async function getClientIdentification(token: string) {
+    const client = await getClientDetails(token);
     return client ? client.CLI_CEDULA_RUC : null;
 }
 
 export async function checkout(identification: string, cedulaFactura: string, formaPago: string) {
     try {
-        const res = await fetch(`${process.env.API_URL}/cart/${identification}/checkout`, {
+        const res = await fetch(`${API_URL}/cart/${identification}/checkout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cedulaFactura, formaPago }),

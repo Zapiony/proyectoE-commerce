@@ -29,23 +29,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                // 1. Recuperar el token
                 const token = localStorage.getItem('token');
 
                 if (!token) {
-                    // Fallback to basic user data if no token (or maybe just stop)
-                    const storedUser = localStorage.getItem('user');
-                    if (storedUser) {
-                        const parsed = JSON.parse(storedUser);
-                        setUser(parsed);
-                        setRole(parsed.role || 'guest');
-                    }
+                    setUser(null);
+                    setRole('guest');
                     return;
                 }
 
                 // 2. Hacer la petición
-                // Using exact URL from user request or fallback to env if user prefers
-                const apiUrl = 'http://localhost:3000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
                 const response = await fetch(`${apiUrl}/auth/profile`, {
                     method: 'GET',
                     headers: {
@@ -59,16 +52,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
 
                 const data = await response.json();
-                console.log('Perfil del usuario:', data);
+                console.log('Perfil del usuario (Nuevo):', data);
 
-                if (data) {
-                    const storedUser = localStorage.getItem('user');
-                    let localRole: UserRole = 'guest';
-                    if (storedUser) {
-                        localRole = JSON.parse(storedUser).role;
-                    }
-
-                    const userFinal = { ...data, role: data.role || localRole };
+                if (data && data.user) {
+                    const valUser = data.user;
+                    const userFinal = {
+                        ...valUser,
+                        // Ensure critical ID is always at top level
+                        cedula: valUser.cedula,
+                        username: valUser.cedula || valUser.username || valUser.name,
+                        role: valUser.role || 'client'
+                    };
                     setUser(userFinal);
                     setRole(userFinal.role);
                 }
@@ -88,7 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const login = (userData: User) => {
         setUser(userData);
         setRole(userData.role);
-        localStorage.setItem('user', JSON.stringify(userData));
+        // localStorage.setItem('user', JSON.stringify(userData));
 
         if (userData.access_token) {
             localStorage.setItem('token', userData.access_token);

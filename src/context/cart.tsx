@@ -27,57 +27,41 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const [resolvedUserId, setResolvedUserId] = useState<string | undefined>(undefined);
     const { user } = useAuth();
 
-    // Helper to extract user ID safely from the user object
-    const getUserIdFromObject = (u: any) => {
-        if (!u) return undefined;
-        // Check direct properties
-        if (u.identification) return u.identification;
-        if (u.CLI_CEDULA_RUC) return u.CLI_CEDULA_RUC;
-        if (u.id) return u.id;
-
-        // Check nested 'user' object
-        if (u.user) {
-            if (u.user.identification) return u.user.identification;
-            if (u.user.CLI_CEDULA_RUC) return u.user.CLI_CEDULA_RUC;
-            if (u.user.id) return u.user.id;
-        }
-        return undefined;
-    };
-
-    // Effect to Resolve User ID (from object or via API)
     useEffect(() => {
-        if (!user) {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+        if (!token) {
             setResolvedUserId(undefined);
+            setCart([]);
             return;
         }
 
-        const idFromObj = getUserIdFromObject(user);
-        if (idFromObj) {
-            setResolvedUserId(idFromObj);
-        } else {
-            // Try to fetch via API if we have a username/name
-            const username = user.name || (user.user && user.user.name);
-            if (username) {
-                console.log("CartContext: User ID missing in object. Fetching for username:", username);
-                import('@/service/carritoComprasDP').then(mod => {
-                    mod.getClientIdentification(username).then(id => {
-                        console.log("CartContext: Resolved ID from API:", id);
-                        if (id) setResolvedUserId(id);
-                    });
-                });
-            }
-        }
-    }, [user]);
+        console.log("CartContext: Resolving User ID via Token...");
+        import('@/service/carritoComprasDP').then(mod => {
+            mod.getClientIdentification(token).then(id => {
+                console.log("CartContext: Resolved ID from API (via token):", id);
+                if (id) {
+                    setResolvedUserId(id);
+                } else {
+                    console.warn("CartContext: Token present but could not resolve ID.");
+                    // Optional fallback or logout?
+                }
+            });
+        });
+    }, [user]); // Trigger on user/auth changes
 
     // Load cart logic
     useEffect(() => {
         // Detailed log
         if (user) {
             console.log("CartContext: Processing Cart for Resolved ID:", resolvedUserId);
+        } else {
+            setCart([]); // Ensure cleared if no user
         }
 
         // If user is logged in and we have an ID, prioritize server cart
         if (resolvedUserId) {
+            setCart([]); // Clear temporary while fetching to avoid stale data
             getCart(resolvedUserId).then((response) => {
                 if (response.success && response.data) {
                     const apiItems = response.data.map((item: any) => ({
@@ -93,35 +77,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     setCart([]);
                 }
             }).catch(e => console.error(e));
-        } else {
-            // Guest mode: use local storage (only if no user is fully resolved yet)
-            // But if user is null, definitely guest mode.
-            if (!user) {
-                const storedCart = localStorage.getItem('cart');
-                if (storedCart) {
-                    try {
-                        setCart(JSON.parse(storedCart));
-                    } catch (e) {
-                        console.error("Failed to parse cart", e);
-                        setCart([]);
-                    }
-                } else {
-                    setCart([]);
-                }
-            }
         }
     }, [user, resolvedUserId]);
 
-    // Save to localStorage ONLY if user is guest
-    useEffect(() => {
-        if (!user && !resolvedUserId) {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-    }, [cart, user, resolvedUserId]);
-
     const addToCart = async (product: IProducto, quantity = 1) => {
         console.log("CartContext: addToCart called for", product.PRD_CODIGO, "Quantity:", quantity);
-        console.log("CartContext: Current resolvedUserId:", resolvedUserId);
 
         // Optimistic update
         setCart((prevCart) => {
@@ -137,12 +97,27 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         });
         setIsCartOpen(true);
 
-        // API call if user is logged in
-        if (resolvedUserId) {
-            console.log("CartContext: Triggering API call to add item...");
-            await addToCartService(resolvedUserId, product.PRD_CODIGO, quantity);
+        // API call using TOKEN to resolve ID
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (token) {
+            console.log("CartContext: Triggering API call with token resolution...");
+            import('@/service/carritoComprasDP').then(mod => {
+                mod.getClientIdentification(token).then(freshId => {
+                    if (freshId) {
+                        console.log("CartContext: Resolved ID from token:", freshId);
+                        addToCartService(freshId, product.PRD_CODIGO, quantity);
+                    } else {
+                        console.warn("CartContext: Could not resolve ID from token for add to cart.");
+                    }
+                });
+            });
         } else {
-            console.warn("CartContext: Cannot fetch API, resolvedUserId is missing.");
+            // Fallback to state if no token (e.g. guest, but we disabled guest storage)
+            if (resolvedUserId) {
+                await addToCartService(resolvedUserId, product.PRD_CODIGO, quantity);
+            } else {
+                console.warn("CartContext: Cannot fetch API, no token and no resolvedUserId.");
+            }
         }
     };
 
@@ -150,9 +125,16 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         // Optimistic update
         setCart((prevCart) => prevCart.filter((item) => item.PRD_CODIGO !== productCode));
 
-        // API call if user is logged in
-        if (resolvedUserId) {
-            await removeFromCartService(resolvedUserId, productCode);
+        // API call using TOKEN
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (token) {
+            import('@/service/carritoComprasDP').then(mod => {
+                mod.getClientIdentification(token).then(freshId => {
+                    if (freshId) {
+                        removeFromCartService(freshId, productCode);
+                    }
+                });
+            });
         }
     };
 
