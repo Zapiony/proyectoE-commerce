@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getProductoByCodigoAction, getProductosAction } from '@/service/productoDP';
+import { getProductByCode, getProducts } from '@/service/productoDP';
 import { IProducto } from "@/service/productoDP";
 import Image from 'next/image';
-import { useCart } from '@/context/cart-context';
+import { useCart } from '@/context/cart';
 import { useRouter, useParams } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartPlus, faStar } from '@fortawesome/free-solid-svg-icons';
+import ButtonGeneral from '@/components/ui/buttonGeneral';
 
 export default function ProductDetailPage() {
     const params = useParams();
@@ -24,13 +27,13 @@ export default function ProductDetailPage() {
             const decodedCode = decodeURIComponent(Array.isArray(code) ? code[0] : code);
 
             try {
-                const res = await getProductoByCodigoAction(decodedCode);
+                const res = await getProductByCode(decodedCode);
                 if (res.success && res.data) {
                     setProduct(res.data);
                 }
 
                 // Fetch recommendations (random 3)
-                const allRes = await getProductosAction();
+                const allRes = await getProducts();
                 if (allRes.success && allRes.data) {
                     const otherProducts = allRes.data.filter((p: IProducto) => p.PRD_CODIGO !== decodedCode);
                     // Shuffle and take 3
@@ -97,13 +100,14 @@ export default function ProductDetailPage() {
                         <li>Precio: ${Number(product.PRD_PRECIO).toFixed(2)}</li>
                     </ul>
 
-                    <button
-                        className="btn btn-primary btn-lg rounded-pill px-5"
-                        style={{ backgroundColor: '#002347', borderColor: '#002347' }}
+                    <ButtonGeneral
+                        texto={
+                            <span className="d-flex align-items-center justify-content-center gap-2">
+                                Añadir <FontAwesomeIcon icon={faCartPlus} className="small" />
+                            </span> 
+                        }
                         onClick={() => addToCart(product)}
-                    >
-                        Añadir al carrito
-                    </button>
+                    />
                 </div>
             </div>
 

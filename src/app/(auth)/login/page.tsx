@@ -58,22 +58,7 @@ export default function LoginPage() {
 
           <h2 className="mb-4 fw-bold">Iniciar sesión</h2>
 
-          <div className={styles.toggleContainer}>
-            <button
-              className={`${styles.toggleBtn} ${userType === 'client' ? styles.active : ''}`}
-              onClick={() => setUserType('client')}
-              type="button"
-            >
-              Soy cliente
-            </button>
-            <button
-              className={`${styles.toggleBtn} ${userType === 'employee' ? styles.active : ''}`}
-              onClick={() => setUserType('employee')}
-              type="button"
-            >
-              Soy empleado
-            </button>
-          </div>
+          
 
           <form onSubmit={handleLogin} className="w-100">
             <Input

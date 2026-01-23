@@ -3,15 +3,15 @@
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import { useEffect, useState } from 'react';
-import { getProductosAction } from '@/service/productoDP';
-import { getCategoriasAction } from '@/service/categoriaDP';
+import { getProducts } from '@/service/productoDP';
+import { getCategorias } from '@/service/categoriaDP';
 import { ICategoria } from "@/service/categoriaDP";
 import { IProducto } from "@/service/productoDP";
-import Link from 'next/link';
-import { useCart } from '@/context/cart-context';
+import { useCart } from '@/context/cart';
 import { useAuth } from '@/context/auth-context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import ProductCard from '@/components/ui/productCard';
 
 export default function ProductosPage() {
   const router = useRouter();
@@ -22,14 +22,14 @@ export default function ProductosPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const { toggleCart, cart } = useCart();
-  const { user } = useAuth(); // Assuming useAuth provides user status
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [prodRes, catRes] = await Promise.all([
-          getProductosAction(),
-          getCategoriasAction()
+          getProducts(),
+          getCategorias()
         ]);
 
         if (prodRes.success && prodRes.data) {
@@ -64,10 +64,6 @@ export default function ProductosPage() {
 
     setFilteredProducts(result);
   }, [selectedCategory, searchTerm, products]);
-
-  const handleProductClick = (code: string) => {
-    router.push(`/productos/${code}`);
-  };
 
   if (loading) return <div className="container mt-5 text-center">Cargando productos...</div>;
 
@@ -141,38 +137,10 @@ export default function ProductosPage() {
 
         {/* Product Grid */}
         <div className="col-md-9">
-          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             {filteredProducts.map((product) => (
               <div key={product.PRD_CODIGO} className="col">
-                <div
-                  className="card h-100 border rounded-4 overflow-hidden cursor-pointer product-card-hover"
-                  onClick={() => handleProductClick(product.PRD_CODIGO)}
-                  style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
-                >
-                  <div className="position-relative w-100 bg-light d-flex align-items-center justify-content-center" style={{ height: '250px' }}>
-                    <div className="text-center p-4">
-                      <Image
-                        src="/img/imagenProducto.png"
-                        alt={product.PRD_DESCRIPCION}
-                        width={200}
-                        height={200}
-                        className="object-fit-contain"
-                      />
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <h5 className="card-title fw-bold text-truncate">{product.PRD_DESCRIPCION}</h5>
-                    <p className="card-text text-muted small text-truncate-2" style={{ minHeight: '40px' }}>
-                      {(product.PRD_DESCRIPCION || '').length > 50
-                        ? (product.PRD_DESCRIPCION || '').substring(0, 50) + '...'
-                        : (product.PRD_DESCRIPCION || '')}
-                    </p>
-                    <div className="mb-2 text-warning small">
-                      <i className="fa-solid fa-star"></i> 4.5 <span className="text-muted">(400)</span>
-                    </div>
-                    <h5 className="fw-bold m-0">${Number(product.PRD_PRECIO).toFixed(2)}</h5>
-                  </div>
-                </div>
+                <ProductCard product={product} />
               </div>
             ))}
             {filteredProducts.length === 0 && (

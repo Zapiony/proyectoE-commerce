@@ -3,12 +3,12 @@ import { Karla } from "next/font/google";
 import Script from 'next/script';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
-import Navbar from '@/components/layout/navbar';
+import Navbar from '@/components/layout/navBar';
 import Footer from '@/components/layout/footer';
 import Logo from './logoSinLetras.png';
 import { AuthProvider } from '@/context/auth-context';
-import { CartProvider } from '@/context/cart-context';
-import SidebarCart from '@/components/layout/sidebar-cart';
+import { CartProvider } from '@/context/cart';
+import SidebarCart from '@/components/cart/sidebar-cart';
 
 const inter = Karla({ subsets: ["latin"] });
 

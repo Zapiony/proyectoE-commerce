@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column, FormOption } from '@/components/admin/generic-table';
-import { getProductosAction, createProductoAction, updateProductoAction, deleteProductoAction } from '@/service/productoDP';
-import { getCategoriasAction } from '@/service/categoriaDP';
+import { getProducts, createProduct, updateProduct, deleteProduct } from '@/service/productoDP';
+import { getCategorias } from '@/service/categoriaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { ICategoria } from "@/service/categoriaDP";
@@ -54,14 +54,14 @@ export default function ProductosAdminPage() {
     async function fetchData() {
       try {
         // Fetch Products
-        const productsResult = await getProductosAction();
+        const productsResult = await getProducts();
         if (productsResult.success && productsResult.data) {
           setData(productsResult.data);
           setAllData(productsResult.data);
         }
 
         // Fetch Categories
-        const categoriesResult = await getCategoriasAction();
+        const categoriesResult = await getCategorias();
         if (categoriesResult.success && categoriesResult.data) {
           setCategorias(categoriesResult.data);
           // Map categories to FormOptions
@@ -116,9 +116,9 @@ export default function ProductosAdminPage() {
 
     let result;
     if (exists) {
-      result = await updateProductoAction(newItem);
+      result = await updateProduct(newItem);
     } else {
-      result = await createProductoAction(newItem);
+      result = await createProduct(newItem);
     }
 
     if (result.success) {
@@ -152,7 +152,7 @@ export default function ProductosAdminPage() {
   const executeDelete = async () => {
     if (!confirmState.item) return;
 
-    const result = await deleteProductoAction(confirmState.item.PRD_CODIGO);
+    const result = await deleteProduct(confirmState.item.PRD_CODIGO);
 
     if (result.success) {
       setData(prev => prev.filter(p => p.PRD_CODIGO !== confirmState.item!.PRD_CODIGO));

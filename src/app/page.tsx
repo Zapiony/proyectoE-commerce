@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import Boton from "@/components/ui/buttonGeneral";
+import { getClientDetails } from '@/service/clienteDP';
 
 export default function Home() {
   const router = useRouter();

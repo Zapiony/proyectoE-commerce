@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getOrdenesAction, createOrdenAction, recibirPedidoAction, deleteOrdenAction } from '@/service/ordenDP';
-import { getProveedoresAction } from '@/service/proveedorDP';
-import { getProductosAction } from '@/service/productoDP';
+import { getOrdenes, createOrden, recibirPedido, deleteOrden } from '@/service/ordenDP';
+import { getSuppliers } from '@/service/proveedorDP';
+import { getProducts } from '@/service/productoDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import ButtonGeneral from '@/components/ui/buttonGeneral';
@@ -40,9 +40,9 @@ export default function OrdenesPage() {
     const loadData = async () => {
         setIsLoading(true);
         const [ordenesRes, provRes, prodRes] = await Promise.all([
-            getOrdenesAction(),
-            getProveedoresAction(),
-            getProductosAction()
+            getOrdenes(),
+            getSuppliers(),
+            getProducts()
         ]);
 
         if (ordenesRes.success) setData(ordenesRes.data as IOrdenCompra[]);
@@ -70,7 +70,7 @@ export default function OrdenesPage() {
             };
         });
 
-        const res = await createOrdenAction(newOrder as IOrdenCompra, details);
+        const res = await createOrden(newOrder as IOrdenCompra, details);
         if (res.success) {
             setAlertState({ isOpen: true, type: 'success', message: res.message! });
             setIsCreateOpen(false);
@@ -106,7 +106,7 @@ export default function OrdenesPage() {
         setConfirmState({ ...confirmState, isOpen: false });
 
         if (confirmState.action === 'RECEIVE' && confirmState.targetId) {
-            const res = await recibirPedidoAction(confirmState.targetId);
+            const res = await recibirPedido(confirmState.targetId);
             if (res.success) {
                 setAlertState({ isOpen: true, type: 'success', message: res.message! });
                 loadData();
@@ -114,7 +114,7 @@ export default function OrdenesPage() {
                 setAlertState({ isOpen: true, type: 'error', message: res.message! });
             }
         } else if (confirmState.action === 'DELETE' && confirmState.targetId) {
-            const res = await deleteOrdenAction(confirmState.targetId);
+            const res = await deleteOrden(confirmState.targetId);
             if (res.success) {
                 setAlertState({ isOpen: true, type: 'success', message: res.message! });
                 loadData();

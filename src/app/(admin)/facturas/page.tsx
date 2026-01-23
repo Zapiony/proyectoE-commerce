@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getFacturasAction, anularFacturaAction } from '@/service/facturaDP';
+import { getFacturas, anularFactura } from '@/service/facturaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { IFactura } from "@/service/facturaDP";
@@ -31,7 +31,7 @@ export default function FacturasPage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getFacturasAction();
+                const result = await getFacturas();
                 if (result.success && result.data) {
                     setData(result.data);
                     setAllData(result.data);

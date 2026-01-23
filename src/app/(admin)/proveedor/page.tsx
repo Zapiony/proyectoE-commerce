@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getProveedoresAction, createProveedorAction, updateProveedorAction, deleteProveedorAction } from '@/service/proveedorDP';
+import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/service/proveedorDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { IProveedor } from "@/service/proveedorDP";
@@ -39,7 +39,7 @@ export default function ProveedorPage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getProveedoresAction();
+                const result = await getSuppliers();
                 if (result.success && result.data) {
                     setData(result.data);
                     setAllData(result.data);
@@ -102,9 +102,9 @@ export default function ProveedorPage() {
 
         let result;
         if (exists) {
-            result = await updateProveedorAction(newItem);
+            result = await updateSupplier(newItem);
         } else {
-            result = await createProveedorAction(newItem);
+            result = await createSupplier(newItem);
         }
 
         if (result.success) {
@@ -138,7 +138,7 @@ export default function ProveedorPage() {
     const executeDelete = async () => {
         if (!confirmState.item) return;
 
-        const result = await deleteProveedorAction(confirmState.item.PRV_RUC);
+        const result = await deleteSupplier(confirmState.item.PRV_RUC);
 
         if (result.success) {
             setData(prev => prev.filter(p => p.PRV_RUC !== confirmState.item!.PRV_RUC));
