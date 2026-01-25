@@ -22,11 +22,15 @@ function validateBodegaData(bodega: IBodega) {
     return null;
 }
 
-export async function getBodegasAction() {
+export async function getBodegasAction(token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/warehouses`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             cache: 'no-store'
         });
 
@@ -42,7 +46,7 @@ export async function getBodegasAction() {
     }
 }
 
-export async function createBodegaAction(bodega: IBodega) {
+export async function createBodegaAction(bodega: IBodega, token?: string) {
     try {
         const validationError = validateBodegaData(bodega);
         if (validationError) {
@@ -56,9 +60,14 @@ export async function createBodegaAction(bodega: IBodega) {
             BOD_NOMBRE_ENCARGADO: bodega.BOD_NOMBRE_ENCARGADO.toUpperCase()
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/warehouses`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(bodegaToSave)
         });
 
@@ -75,7 +84,7 @@ export async function createBodegaAction(bodega: IBodega) {
     }
 }
 
-export async function updateBodegaAction(bodega: IBodega) {
+export async function updateBodegaAction(bodega: IBodega, token?: string) {
     try {
         const validationError = validateBodegaData(bodega);
         if (validationError) {
@@ -89,9 +98,14 @@ export async function updateBodegaAction(bodega: IBodega) {
             BOD_NOMBRE_ENCARGADO: bodega.BOD_NOMBRE_ENCARGADO.toUpperCase()
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/warehouses/${bodega.BOD_CODIGO}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(bodegaToSave)
         });
 
@@ -108,10 +122,15 @@ export async function updateBodegaAction(bodega: IBodega) {
     }
 }
 
-export async function deleteBodegaAction(codigo: string) {
+export async function deleteBodegaAction(codigo: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/warehouses/${codigo}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!response.ok) {

@@ -37,7 +37,8 @@ export default function BodegaPage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getBodegasAction();
+                const token = localStorage.getItem('token') || undefined;
+                const result = await getBodegasAction(token);
                 if (result.success && result.data) {
                     setData(result.data);
                     setAllData(result.data);
@@ -85,12 +86,13 @@ export default function BodegaPage() {
         }
 
         const exists = allData.find(d => d.BOD_CODIGO === newItem.BOD_CODIGO);
+        const token = localStorage.getItem('token') || undefined;
 
         let result;
         if (exists) {
-            result = await updateBodegaAction(newItem);
+            result = await updateBodegaAction(newItem, token);
         } else {
-            result = await createBodegaAction(newItem);
+            result = await createBodegaAction(newItem, token);
         }
 
         if (result.success) {
@@ -124,7 +126,8 @@ export default function BodegaPage() {
     const executeDelete = async () => {
         if (!confirmState.item) return;
 
-        const result = await deleteBodegaAction(confirmState.item.BOD_CODIGO);
+        const token = localStorage.getItem('token') || undefined;
+        const result = await deleteBodegaAction(confirmState.item.BOD_CODIGO, token);
 
         if (result.success) {
             setData(prev => prev.filter(p => p.BOD_CODIGO !== confirmState.item!.BOD_CODIGO));
