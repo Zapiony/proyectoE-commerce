@@ -1,9 +1,9 @@
 'use server';
 
 export interface IOrdenCompra {
-    ORD_CODIGO?: number; 
+    ORD_CODIGO?: number;
     PRV_RUC: string;
-    PRV_NOMBRE?: string; 
+    PRV_NOMBRE?: string;
     ORD_FECHA_ENTREGA: Date | string;
     ORD_ESTADO: string;
 }
@@ -15,11 +15,15 @@ export interface IDetalleOrdenCompra {
     DET_ORD_COMPRA_COSTO_UNITARIO: number;
 }
 
-export async function getOrdenes() {
+export async function getOrdenes(token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/purchase-orders`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             cache: 'no-store'
         });
 
@@ -35,7 +39,7 @@ export async function getOrdenes() {
     }
 }
 
-export async function createOrden(orden: IOrdenCompra, detalles: IDetalleOrdenCompra[]) {
+export async function createOrden(orden: IOrdenCompra, detalles: IDetalleOrdenCompra[], token?: string) {
     try {
         if (!orden.PRV_RUC) return { success: false, message: 'Seleccione un proveedor.' };
         if (!orden.ORD_FECHA_ENTREGA) return { success: false, message: 'Ingrese la fecha de entrega.' };
@@ -51,9 +55,14 @@ export async function createOrden(orden: IOrdenCompra, detalles: IDetalleOrdenCo
             }))
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/purchase-orders`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(payload)
         });
 
@@ -70,11 +79,15 @@ export async function createOrden(orden: IOrdenCompra, detalles: IDetalleOrdenCo
     }
 }
 
-export async function recibirPedido(ordCodigo: number) {
+export async function recibirPedido(ordCodigo: number, token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/purchase-orders/${ordCodigo}/receive`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
         });
 
         const data = await response.json();
@@ -90,10 +103,15 @@ export async function recibirPedido(ordCodigo: number) {
     }
 }
 
-export async function deleteOrden(ordCodigo: number) {
+export async function deleteOrden(ordCodigo: number, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/purchase-orders/${ordCodigo}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!response.ok) {

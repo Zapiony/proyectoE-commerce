@@ -39,9 +39,10 @@ export default function OrdenesPage() {
 
     const loadData = async () => {
         setIsLoading(true);
+        const token = localStorage.getItem('token') || undefined;
         const [ordenesRes, provRes, prodRes] = await Promise.all([
-            getOrdenes(),
-            getSuppliers(),
+            getOrdenes(token),
+            getSuppliers(token),
             getProducts()
         ]);
 
@@ -70,7 +71,8 @@ export default function OrdenesPage() {
             };
         });
 
-        const res = await createOrden(newOrder as IOrdenCompra, details);
+        const token = localStorage.getItem('token') || undefined;
+        const res = await createOrden(newOrder as IOrdenCompra, details, token);
         if (res.success) {
             setAlertState({ isOpen: true, type: 'success', message: res.message! });
             setIsCreateOpen(false);
@@ -105,8 +107,10 @@ export default function OrdenesPage() {
     const performAction = async () => {
         setConfirmState({ ...confirmState, isOpen: false });
 
+        const token = localStorage.getItem('token') || undefined;
+
         if (confirmState.action === 'RECEIVE' && confirmState.targetId) {
-            const res = await recibirPedido(confirmState.targetId);
+            const res = await recibirPedido(confirmState.targetId, token);
             if (res.success) {
                 setAlertState({ isOpen: true, type: 'success', message: res.message! });
                 loadData();
@@ -114,7 +118,7 @@ export default function OrdenesPage() {
                 setAlertState({ isOpen: true, type: 'error', message: res.message! });
             }
         } else if (confirmState.action === 'DELETE' && confirmState.targetId) {
-            const res = await deleteOrden(confirmState.targetId);
+            const res = await deleteOrden(confirmState.targetId, token);
             if (res.success) {
                 setAlertState({ isOpen: true, type: 'success', message: res.message! });
                 loadData();
