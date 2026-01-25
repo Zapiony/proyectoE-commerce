@@ -9,11 +9,15 @@ export interface IProveedor {
     PRV_RAZON_SOCIAL: string;
 }
 
-export async function getSuppliers() {
+export async function getSuppliers(token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/suppliers`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             cache: 'no-store'
         });
 
@@ -25,7 +29,7 @@ export async function getSuppliers() {
 
         const suppliers = rawData.map((item: any) => ({
             PRV_RUC: item.PRV_RUC,
-            PRV_NOMBRE: item.PRV_NOMBRE || '',
+            PRV_NOMBRE: item.PRV_NOMBRE,
             PRV_DIRECCION: item.PRV_DIRECCION,
             PRV_TELEFONO: item.PRV_TELEFONO,
             PRV_CORREO: item.PRV_CORREO,
@@ -39,7 +43,7 @@ export async function getSuppliers() {
     }
 }
 
-export async function createSupplier(supplier: IProveedor) {
+export async function createSupplier(supplier: IProveedor, token?: string) {
     try {
         const validationError = validateProveedorData(supplier);
         if (validationError) {
@@ -53,9 +57,14 @@ export async function createSupplier(supplier: IProveedor) {
             PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase()
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/suppliers`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(supplierToSave)
         });
 
@@ -72,7 +81,7 @@ export async function createSupplier(supplier: IProveedor) {
     }
 }
 
-export async function updateSupplier(supplier: IProveedor) {
+export async function updateSupplier(supplier: IProveedor, token?: string) {
     try {
         const validationError = validateProveedorData(supplier);
         if (validationError) {
@@ -86,9 +95,14 @@ export async function updateSupplier(supplier: IProveedor) {
             PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase()
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/suppliers/${supplier.PRV_RUC}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(supplierToSave)
         });
 
@@ -105,10 +119,15 @@ export async function updateSupplier(supplier: IProveedor) {
     }
 }
 
-export async function deleteSupplier(ruc: string) {
+export async function deleteSupplier(ruc: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/suppliers/${ruc}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!response.ok) {
