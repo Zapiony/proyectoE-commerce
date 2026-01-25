@@ -12,7 +12,6 @@ import Logo from '../../../../public/img/logoConLetras.png';
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
-  const [userType, setUserType] = useState<'client' | 'employee'>('client');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -24,16 +23,24 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const result = await loginAction(username, password, userType);
+      const result = await loginAction(username, password);
 
       if (result.success && result.user) {
-        login({
-          ...result.user,
-          role: userType
-        });
-        if (userType === 'client') {
+        const userData = {
+          ...result.user.user,
+          access_token: result.user.access_token
+        };
+        login(userData);
+
+        const userRole = result.user.user?.role;
+
+        if (userRole === 'client') {
           router.push('/productos');
+        } else if (userRole === 'admin') {
+          router.push('/');
         } else {
+          console.warn("Unknown role:", userRole);
+          // Default fallback if needed
           router.push('/');
         }
       } else {
@@ -57,8 +64,6 @@ export default function LoginPage() {
           </div>
 
           <h2 className="mb-4 fw-bold">Iniciar sesión</h2>
-
-          
 
           <form onSubmit={handleLogin} className="w-100">
             <Input

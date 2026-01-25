@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-type UserRole = 'guest' | 'client' | 'employee';
+type UserRole = 'guest' | 'client' | 'admin';
 
 interface User {
     username: string;
@@ -37,25 +37,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     return;
                 }
 
-                // 2. Hacer la petición
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-                const response = await fetch(`${apiUrl}/auth/profile`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const { getProfileAction } = await import('../service/authDP');
+                const result = await getProfileAction(token);
 
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to fetch profile');
                 }
 
-                const data = await response.json();
+                const data = result.data;
                 console.log('Perfil del usuario (Nuevo):', data);
 
-                if (data && data.user) {
-                    const valUser = data.user;
+                if (data) {
+                    // The structure might be nested depending on how backend returns it
+                    // Based on previous code: data.user or data directly
+                    const valUser = data.user || data;
                     const userFinal = {
                         ...valUser,
                         // Ensure critical ID is always at top level
@@ -69,6 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             } catch (error) {
                 console.error('Error al obtener perfil:', error);
+                // Only remove token if it was really invalid (401/403), but for now safe to clear on error to prevent infinite loops
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 setUser(null);
@@ -82,8 +78,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const login = (userData: User) => {
         setUser(userData);
         setRole(userData.role);
-        // localStorage.setItem('user', JSON.stringify(userData));
-
         if (userData.access_token) {
             localStorage.setItem('token', userData.access_token);
         } else if (userData.token) {

@@ -105,7 +105,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
         if (token) {
             console.log("CheckoutModal: Fetching fresh client data using token...");
             import('@/service/carritoComprasDP').then(mod => {
-                mod.getClientDetails(token).then(data => {
+                mod.getClientDetails().then(data => {
                     console.log("CheckoutModal: Fetch result:", data);
                     if (data) {
                         setClientData(data);
@@ -165,7 +165,8 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
         setSearchLoading(true);
         setOtherClientData(null);
         try {
-            const data = await getClientByCedula(cedulaFactura);
+            const token = localStorage.getItem('token') || undefined;
+            const data = await getClientByCedula(cedulaFactura, token);
             if (data) {
                 setOtherClientData(data);
             } else {
@@ -227,7 +228,8 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
         }
 
         try {
-            const res = await checkout(cedula, idToUse, finalPaymentMethod);
+            const token = localStorage.getItem('token') || undefined;
+            const res = await checkout(cedula, idToUse, finalPaymentMethod, token);
             if (res.success) {
                 setSuccess(true);
                 clearCart();
@@ -428,12 +430,12 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
                             <div className="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                                 <h5 className="fw-bold m-0">IVA:</h5>
-                                <h4 className="fw-bold text-primary m-0">${(total*0.15).toFixed(2)}</h4>
+                                <h4 className="fw-bold text-primary m-0">${(total * 0.15).toFixed(2)}</h4>
                             </div>
 
                             <div className="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                                 <h5 className="fw-bold m-0">Total a Pagar:</h5>
-                                <h4 className="fw-bold text-primary m-0">${(total*1.15).toFixed(2)}</h4>
+                                <h4 className="fw-bold text-primary m-0">${(total * 1.15).toFixed(2)}</h4>
                             </div>
 
                             {error && <div className="alert alert-danger mt-3 py-2 small text-center">{error}</div>}

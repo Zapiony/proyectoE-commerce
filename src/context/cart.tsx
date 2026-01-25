@@ -38,7 +38,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
         console.log("CartContext: Resolving User ID via Token...");
         import('@/service/carritoComprasDP').then(mod => {
-            mod.getClientIdentification(token).then(id => {
+            mod.getClientIdentification().then(id => {
                 console.log("CartContext: Resolved ID from API (via token):", id);
                 if (id) {
                     setResolvedUserId(id);
@@ -62,7 +62,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         // If user is logged in and we have an ID, prioritize server cart
         if (resolvedUserId) {
             setCart([]); // Clear temporary while fetching to avoid stale data
-            getCart(resolvedUserId).then((response) => {
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') || undefined : undefined;
+            getCart(resolvedUserId, token).then((response) => {
                 if (response.success && response.data) {
                     const apiItems = response.data.map((item: any) => ({
                         PRD_CODIGO: item.PRD_CODIGO,
@@ -83,7 +84,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const addToCart = async (product: IProducto, quantity = 1) => {
         console.log("CartContext: addToCart called for", product.PRD_CODIGO, "Quantity:", quantity);
 
-        // Optimistic update
         setCart((prevCart) => {
             const existingItem = prevCart.find((item) => item.PRD_CODIGO === product.PRD_CODIGO);
             if (existingItem) {
@@ -97,24 +97,23 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         });
         setIsCartOpen(true);
 
-        // API call using TOKEN to resolve ID
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (token) {
             console.log("CartContext: Triggering API call with token resolution...");
             import('@/service/carritoComprasDP').then(mod => {
-                mod.getClientIdentification(token).then(freshId => {
+                mod.getClientIdentification().then(freshId => {
                     if (freshId) {
                         console.log("CartContext: Resolved ID from token:", freshId);
-                        addToCartService(freshId, product.PRD_CODIGO, quantity);
+                        addToCartService(freshId, product.PRD_CODIGO, quantity, token);
                     } else {
                         console.warn("CartContext: Could not resolve ID from token for add to cart.");
                     }
                 });
             });
         } else {
-            // Fallback to state if no token (e.g. guest, but we disabled guest storage)
             if (resolvedUserId) {
-                await addToCartService(resolvedUserId, product.PRD_CODIGO, quantity);
+                const storedToken = localStorage.getItem('token') || undefined;
+                await addToCartService(resolvedUserId, product.PRD_CODIGO, quantity, storedToken);
             } else {
                 console.warn("CartContext: Cannot fetch API, no token and no resolvedUserId.");
             }
@@ -129,9 +128,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (token) {
             import('@/service/carritoComprasDP').then(mod => {
-                mod.getClientIdentification(token).then(freshId => {
+                mod.getClientIdentification().then(freshId => {
                     if (freshId) {
-                        removeFromCartService(freshId, productCode);
+                        removeFromCartService(freshId, productCode, token);
                     }
                 });
             });

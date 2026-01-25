@@ -14,7 +14,7 @@ const Navbar = () => {
 
     const isLogged = role !== 'guest';
 
-    const links = role === 'employee'
+    const links = role === 'admin'
         ? [
             { name: 'CLIENTES', href: '/usuario', active: true },
             { name: 'BODEGAS', href: '/bodega', active: true },
@@ -35,7 +35,7 @@ const Navbar = () => {
 
                 {/* 1. LOGO */}
                 <Link href="/" className="navbar-brand d-flex align-items-center">
-                    <Image src={Logo} alt="Logo de la empresa" height={40} />
+                    <Image src={Logo} alt="Logo de la empresa" loading="eager" height={40} />
                 </Link>
 
                 {/* Botón Hamburguesa (Móvil) */}
