@@ -7,9 +7,14 @@ export { getClientDetails };
 const API_URL = process.env.API_URL;
 if (!API_URL) console.warn("WARNING: process.env.API_URL is undefined in carritoComprasDP.ts");
 
-export async function getCart(identification: string) {
+export async function getCart(identification: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await fetch(`${API_URL}/cart/${identification}`, {
+            headers: headers,
             cache: 'no-store',
         });
 
@@ -25,16 +30,22 @@ export async function getCart(identification: string) {
     }
 }
 
-export async function addToCart(identification: string, productId: string, quantity: number) {
+export async function addToCart(identification: string, productId: string, quantity: number, token?: string) {
     try {
         const payload = {
             PRD_CODIGO: productId,
             cantidad: quantity
         };
         console.log("addToCart: Sending payload:", payload, "to", `${API_URL}/cart/${identification}/add`);
+
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const res = await fetch(`${API_URL}/cart/${identification}/add`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(payload),
         });
 
@@ -51,10 +62,15 @@ export async function addToCart(identification: string, productId: string, quant
     }
 }
 
-export async function removeFromCart(identification: string, productId: string) {
+export async function removeFromCart(identification: string, productId: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await fetch(`${API_URL}/cart/${identification}/remove/${productId}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!res.ok) {
@@ -68,16 +84,21 @@ export async function removeFromCart(identification: string, productId: string) 
     }
 }
 
-export async function getClientIdentification(token: string) {
-    const client = await getClientDetails(token);
+export async function getClientIdentification() {
+    const client = await getClientDetails();
+    console.log("getClientIdentification: Client details for cart:", client);
     return client ? client.CLI_CEDULA_RUC : null;
 }
 
-export async function checkout(identification: string, cedulaFactura: string, formaPago: string) {
+export async function checkout(identification: string, cedulaFactura: string, formaPago: string, token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await fetch(`${API_URL}/cart/${identification}/checkout`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify({ cedulaFactura, formaPago }),
         });
 

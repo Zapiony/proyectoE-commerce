@@ -27,9 +27,10 @@ export default function ProductosPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token') || undefined;
         const [prodRes, catRes] = await Promise.all([
           getProducts(),
-          getCategorias()
+          getCategorias(token)
         ]);
 
         if (prodRes.success && prodRes.data) {

@@ -7,7 +7,7 @@ export interface ICliente {
     CLI_CORREO: string;
 }
 
-export async function createClient(cliente: ICliente) {
+export async function createClient(cliente: ICliente, token?: string) {
     try {
         const validationError = validateClientData(cliente);
         if (validationError) {
@@ -16,9 +16,14 @@ export async function createClient(cliente: ICliente) {
 
         const clientToSave = { ...cliente, CLI_NOMBRE: cliente.CLI_NOMBRE.toUpperCase() };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/clients`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(clientToSave)
         });
 
@@ -35,11 +40,15 @@ export async function createClient(cliente: ICliente) {
     }
 }
 
-export async function getClientes() {
+export async function getClientes(token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/clients`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             cache: 'no-store'
         });
 
@@ -55,7 +64,7 @@ export async function getClientes() {
     }
 }
 
-export async function updateClient(cliente: ICliente) {
+export async function updateClient(cliente: ICliente, token?: string) {
     try {
         const validationError = validateClientData(cliente);
         if (validationError) {
@@ -64,9 +73,14 @@ export async function updateClient(cliente: ICliente) {
 
         const clientToSave = { ...cliente, CLI_NOMBRE: cliente.CLI_NOMBRE.toUpperCase() };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/clients/${cliente.CLI_CEDULA_RUC}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(clientToSave)
         });
 
@@ -83,10 +97,15 @@ export async function updateClient(cliente: ICliente) {
     }
 }
 
-export async function deleteClient(cedula: string) {
+export async function deleteClient(cedula: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/clients/${cedula}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!response.ok) {
@@ -101,9 +120,14 @@ export async function deleteClient(cedula: string) {
     }
 }
 
-export async function getClientByCedula(cedula: string) {
+export async function getClientByCedula(cedula: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await fetch(`${process.env.API_URL}/clients/${cedula}`, {
+            headers: headers,
             cache: 'no-store',
         });
         if (!res.ok) return null;
@@ -114,8 +138,9 @@ export async function getClientByCedula(cedula: string) {
     }
 }
 
-export async function getClientDetails(token: string) {
+export async function getClientDetails() {
     try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         console.log("getClientDetails: Fetching profile with token...");
         const res = await fetch(`${process.env.API_URL}/auth/profile`, {
             headers: { 'Authorization': `Bearer ${token}` },

@@ -6,11 +6,15 @@ export interface ICategoria {
     CAT_DESCRIPCION: string;
 }
 
-export async function getCategorias() {
+export async function getCategorias(token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/categories`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             cache: 'no-store'
         });
 
