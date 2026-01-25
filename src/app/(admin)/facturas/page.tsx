@@ -31,7 +31,8 @@ export default function FacturasPage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getFacturas();
+                const token = localStorage.getItem('token') || undefined;
+                const result = await getFacturas(token);
                 if (result.success && result.data) {
                     setData(result.data);
                     setAllData(result.data);

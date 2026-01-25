@@ -10,11 +10,15 @@ export interface IFactura {
     FAC_METODO_PAGO: string;
 }
 
-export async function getFacturas() {
+export async function getFacturas(token?: string) {
     try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/invoices`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             cache: 'no-store'
         });
 
@@ -41,10 +45,15 @@ export async function getFacturas() {
     }
 }
 
-export async function anularFactura(codigo: number) {
+export async function anularFactura(codigo: number, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${process.env.API_URL}/invoices/${codigo}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!response.ok) {
