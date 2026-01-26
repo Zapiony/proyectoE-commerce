@@ -8,6 +8,7 @@ import Input from "@/components/ui/input";
 import styles from './register.module.css';
 import { registerAction } from '@/service/authDP';
 import Logo from '../../../../public/img/logoConLetras.png';
+import AlertModal from '@/components/ui/alert-modal';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -22,6 +23,7 @@ export default function RegisterPage() {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,7 +50,7 @@ export default function RegisterPage() {
             });
 
             if (res.success) {
-                router.push('/login');
+                setShowSuccessModal(true);
             } else {
                 setError(res.message);
             }
@@ -65,6 +67,11 @@ export default function RegisterPage() {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+    };
+
+    const handleCloseModal = () => {
+        setShowSuccessModal(false);
+        router.push('/login');
     };
 
     return (
@@ -179,7 +186,7 @@ export default function RegisterPage() {
                     <p className="text-secondary mb-4 fs-5">Somos la empresa de distribución #1 de tecnología en el Ecuador</p>
                     <div className={styles.productImageContainer}>
                         <Image
-                            src="/img/vectorHero.png"
+                            src="/img/logoPrincipal.png"
                             alt="Technology"
                             fill
                             className="object-fit-contain"
@@ -187,6 +194,14 @@ export default function RegisterPage() {
                     </div>
                 </div>
             </div>
+
+            <AlertModal
+                isOpen={showSuccessModal}
+                onClose={handleCloseModal}
+                title="Registro Exitoso"
+                message="¡Usuario creado correctamente! Ahora puedes iniciar sesión con tus credenciales."
+                type="success"
+            />
         </div>
     );
 }
