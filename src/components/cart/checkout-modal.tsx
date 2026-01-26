@@ -105,7 +105,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
         if (token) {
             console.log("CheckoutModal: Fetching fresh client data using token...");
             import('@/service/carritoComprasDP').then(mod => {
-                mod.getClientDetails().then(data => {
+                mod.getClientDetails(token).then(data => {
                     console.log("CheckoutModal: Fetch result:", data);
                     if (data) {
                         setClientData(data);

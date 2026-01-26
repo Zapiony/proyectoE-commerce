@@ -84,8 +84,8 @@ export async function removeFromCart(identification: string, productId: string, 
     }
 }
 
-export async function getClientIdentification() {
-    const client = await getClientDetails();
+export async function getClientIdentification(token?: string) {
+    const client = await getClientDetails(token);
     console.log("getClientIdentification: Client details for cart:", client);
     return client ? client.CLI_CEDULA_RUC : null;
 }

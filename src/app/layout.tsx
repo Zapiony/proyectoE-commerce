@@ -10,6 +10,8 @@ import { AuthProvider } from '@/context/auth-context';
 import { CartProvider } from '@/context/cart';
 import SidebarCart from '@/components/cart/sidebar-cart';
 
+import AccessibilityWidget from '@/components/ui/accessibility-widget';
+
 const inter = Karla({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -39,6 +41,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <AccessibilityWidget />
           </CartProvider>
         </AuthProvider>
         <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" />

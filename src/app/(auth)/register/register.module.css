@@ -29,7 +29,7 @@
     z-index: 2;
     position: relative;
     gap: 5%;
-    align-items: stretch;
+    align-items: center;
 }
 
 .leftPanel {
@@ -54,6 +54,7 @@
     align-items: center;
     text-align: center;
     border-radius: 20px;
+    height: fit-content;
 }
 
 .logoImage {

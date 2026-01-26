@@ -2,7 +2,6 @@
 
 export interface IProveedor {
     PRV_RUC: string;
-    PRV_NOMBRE: string;
     PRV_DIRECCION: string;
     PRV_TELEFONO: string;
     PRV_CORREO: string;
@@ -52,9 +51,9 @@ export async function createSupplier(supplier: IProveedor, token?: string) {
 
         const supplierToSave = {
             ...supplier,
-            PRV_NOMBRE: supplier.PRV_NOMBRE.toUpperCase(),
             PRV_RAZON_SOCIAL: supplier.PRV_RAZON_SOCIAL.toUpperCase(),
-            PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase()
+            PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase(),
+            PRV_CORREO: supplier.PRV_CORREO.toUpperCase()
         };
 
         const headers: any = { 'Content-Type': 'application/json' };
@@ -90,7 +89,6 @@ export async function updateSupplier(supplier: IProveedor, token?: string) {
 
         const supplierToSave = {
             ...supplier,
-            PRV_NOMBRE: supplier.PRV_NOMBRE.toUpperCase(),
             PRV_RAZON_SOCIAL: supplier.PRV_RAZON_SOCIAL.toUpperCase(),
             PRV_DIRECCION: supplier.PRV_DIRECCION.toUpperCase()
         };
@@ -150,11 +148,6 @@ function validateProveedorData(supplier: IProveedor) {
 
     if (!phoneRegex.test(supplier.PRV_RUC)) {
         return 'El RUC debe contener solo números.';
-    }
-
-    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!nameRegex.test(supplier.PRV_NOMBRE)) {
-        return 'El nombre de contacto no puede contener números ni caracteres especiales.';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

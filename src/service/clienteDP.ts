@@ -138,10 +138,15 @@ export async function getClientByCedula(cedula: string, token?: string) {
     }
 }
 
-export async function getClientDetails() {
+export async function getClientDetails(token?: string) {
     try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         console.log("getClientDetails: Fetching profile with token...");
+        // If no token provided, try to return early or handle it, but for now we follow the pattern
+        if (!token) {
+            console.log("getClientDetails: No token provided");
+            return null;
+        }
+
         const res = await fetch(`${process.env.API_URL}/auth/profile`, {
             headers: { 'Authorization': `Bearer ${token}` },
             cache: 'no-store'

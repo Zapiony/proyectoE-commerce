@@ -27,6 +27,8 @@ export async function getOrdenes(token?: string) {
             cache: 'no-store'
         });
 
+        console.log('Response:', response);
+
         if (!response.ok) {
             throw new Error(`Error ${response.status}: ${response.statusText}`);
         }

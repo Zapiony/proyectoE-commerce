@@ -38,7 +38,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
         console.log("CartContext: Resolving User ID via Token...");
         import('@/service/carritoComprasDP').then(mod => {
-            mod.getClientIdentification().then(id => {
+            mod.getClientIdentification(token).then(id => {
                 console.log("CartContext: Resolved ID from API (via token):", id);
                 if (id) {
                     setResolvedUserId(id);
@@ -101,7 +101,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         if (token) {
             console.log("CartContext: Triggering API call with token resolution...");
             import('@/service/carritoComprasDP').then(mod => {
-                mod.getClientIdentification().then(freshId => {
+                mod.getClientIdentification(token).then(freshId => {
                     if (freshId) {
                         console.log("CartContext: Resolved ID from token:", freshId);
                         addToCartService(freshId, product.PRD_CODIGO, quantity, token);
@@ -128,7 +128,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (token) {
             import('@/service/carritoComprasDP').then(mod => {
-                mod.getClientIdentification().then(freshId => {
+                mod.getClientIdentification(token).then(freshId => {
                     if (freshId) {
                         removeFromCartService(freshId, productCode, token);
                     }
