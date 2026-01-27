@@ -71,6 +71,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                         PRD_DESCRIPCION: item.PRD_DESCRIPCION,
                         PRD_PRECIO: item.PRD_PRECIO,
                         PRD_COSTO_ADQUISICION: item.PRD_COSTO_ADQUISICION || 0,
+                        DET_BOD_CANTIDAD: item.DET_BOD_CANTIDAD || 9999, // Fallback if missing
                         quantity: item.DET_CAR_CANTIDAD
                     }));
                     setCart(apiItems);
@@ -83,18 +84,40 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
     const addToCart = async (product: IProducto, quantity = 1) => {
         console.log("CartContext: addToCart called for", product.PRD_CODIGO, "Quantity:", quantity);
+        let allowed = true;
 
         setCart((prevCart) => {
             const existingItem = prevCart.find((item) => item.PRD_CODIGO === product.PRD_CODIGO);
+            const stock = product.DET_BOD_CANTIDAD !== undefined ? product.DET_BOD_CANTIDAD : 9999;
+
             if (existingItem) {
+                const newQuantity = existingItem.quantity + quantity;
+                if (newQuantity > stock) {
+                    console.warn(`CartContext: Cannot add more items. Stock: ${stock}, Current: ${existingItem.quantity}, Adding: ${quantity}`);
+                    allowed = false;
+                    return prevCart;
+                }
                 return prevCart.map((item) =>
                     item.PRD_CODIGO === product.PRD_CODIGO
-                        ? { ...item, quantity: item.quantity + quantity }
+                        ? { ...item, quantity: newQuantity }
                         : item
                 );
             }
+
+            if (quantity > stock) {
+                console.warn(`CartContext: Cannot add items. Stock: ${stock}, Adding: ${quantity}`);
+                allowed = false;
+                return prevCart;
+            }
+
             return [...prevCart, { ...product, quantity }];
         });
+
+        if (!allowed) {
+            alert('No puedes agregar más productos de los disponibles en stock.');
+            return;
+        }
+
         setIsCartOpen(true);
 
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
