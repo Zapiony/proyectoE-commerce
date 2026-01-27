@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface BotorProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  texto: string;
+  texto: React.ReactNode;
 }
 
 const ButtonGeneral = ({ texto, className = '', ...props }: BotorProps) => {

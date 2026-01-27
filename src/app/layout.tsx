@@ -3,10 +3,14 @@ import { Karla } from "next/font/google";
 import Script from 'next/script';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
-import Navbar from '@/components/layout/navbar';
+import Navbar from '@/components/layout/navBar';
 import Footer from '@/components/layout/footer';
 import Logo from './logoSinLetras.png';
 import { AuthProvider } from '@/context/auth-context';
+import { CartProvider } from '@/context/cart';
+import SidebarCart from '@/components/cart/sidebar-cart';
+
+import AccessibilityWidget from '@/components/ui/accessibility-widget';
 
 const inter = Karla({ subsets: ["latin"] });
 
@@ -30,11 +34,15 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          <Navbar />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <CartProvider>
+            <Navbar />
+            <SidebarCart />
+            <main>
+              {children}
+            </main>
+            <Footer />
+            <AccessibilityWidget />
+          </CartProvider>
         </AuthProvider>
         <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" />
       </body>

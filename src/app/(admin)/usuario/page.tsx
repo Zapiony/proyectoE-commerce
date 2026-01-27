@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getClientesAction, createClientAction, updateClientAction, deleteClientAction } from '@/actions/cliente-actions';
+import { getClientes, createClient, updateClient, deleteClient } from '@/service/clienteDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
-import { ICliente } from '@/types';
+import { ICliente } from "@/service/clienteDP";
 
 export default function UsuariosPage() {
     const [data, setData] = useState<ICliente[]>([]);
@@ -35,7 +35,8 @@ export default function UsuariosPage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getClientesAction();
+                const token = localStorage.getItem('token') || undefined;
+                const result = await getClientes(token);
                 if (result.success && result.data) {
                     setData(result.data);
                     setAllData(result.data);
@@ -88,12 +89,13 @@ export default function UsuariosPage() {
         }
 
         const exists = allData.find(d => d.CLI_CEDULA_RUC === newItem.CLI_CEDULA_RUC);
+        const token = localStorage.getItem('token') || undefined;
 
         let result;
         if (exists) {
-            result = await updateClientAction(newItem);
+            result = await updateClient(newItem, token);
         } else {
-            result = await createClientAction(newItem);
+            result = await createClient(newItem, token);
         }
 
         if (result.success) {
@@ -127,7 +129,8 @@ export default function UsuariosPage() {
     const executeDelete = async () => {
         if (!confirmState.item) return;
 
-        const result = await deleteClientAction(confirmState.item.CLI_CEDULA_RUC);
+        const token = localStorage.getItem('token') || undefined;
+        const result = await deleteClient(confirmState.item.CLI_CEDULA_RUC, token);
 
         if (result.success) {
             setData(prev => prev.filter(p => p.CLI_CEDULA_RUC !== confirmState.item!.CLI_CEDULA_RUC));

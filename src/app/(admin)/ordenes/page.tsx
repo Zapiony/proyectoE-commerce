@@ -2,14 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getOrdenesAction, createOrdenAction, recibirPedidoAction, deleteOrdenAction } from '@/actions/orden-actions';
-import { getProveedoresAction } from '@/actions/proveedor-actions';
-import { getProductosAction } from '@/actions/producto-actions';
+import { getOrdenes, createOrden, recibirPedido, deleteOrden } from '@/service/ordenDP';
+import { getSuppliers } from '@/service/proveedorDP';
+import { getProducts } from '@/service/productoDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import ButtonGeneral from '@/components/ui/buttonGeneral';
 import Input from '@/components/ui/input';
-import { IOrdenCompra, IProveedor, IProducto, IDetalleOrdenCompra } from '@/types';
+import { IDetalleOrdenCompra } from "@/service/ordenDP";
+import { IOrdenCompra } from "@/service/ordenDP";
+import { IProducto } from "@/service/productoDP";
+import { IProveedor } from "@/service/proveedorDP";
 
 export default function OrdenesPage() {
     const [data, setData] = useState<IOrdenCompra[]>([]);
@@ -36,10 +39,11 @@ export default function OrdenesPage() {
 
     const loadData = async () => {
         setIsLoading(true);
+        const token = localStorage.getItem('token') || undefined;
         const [ordenesRes, provRes, prodRes] = await Promise.all([
-            getOrdenesAction(),
-            getProveedoresAction(),
-            getProductosAction()
+            getOrdenes(token),
+            getSuppliers(token),
+            getProducts()
         ]);
 
         if (ordenesRes.success) setData(ordenesRes.data as IOrdenCompra[]);
@@ -67,7 +71,8 @@ export default function OrdenesPage() {
             };
         });
 
-        const res = await createOrdenAction(newOrder as IOrdenCompra, details);
+        const token = localStorage.getItem('token') || undefined;
+        const res = await createOrden(newOrder as IOrdenCompra, details, token);
         if (res.success) {
             setAlertState({ isOpen: true, type: 'success', message: res.message! });
             setIsCreateOpen(false);
@@ -102,8 +107,10 @@ export default function OrdenesPage() {
     const performAction = async () => {
         setConfirmState({ ...confirmState, isOpen: false });
 
+        const token = localStorage.getItem('token') || undefined;
+
         if (confirmState.action === 'RECEIVE' && confirmState.targetId) {
-            const res = await recibirPedidoAction(confirmState.targetId);
+            const res = await recibirPedido(confirmState.targetId, token);
             if (res.success) {
                 setAlertState({ isOpen: true, type: 'success', message: res.message! });
                 loadData();
@@ -111,7 +118,7 @@ export default function OrdenesPage() {
                 setAlertState({ isOpen: true, type: 'error', message: res.message! });
             }
         } else if (confirmState.action === 'DELETE' && confirmState.targetId) {
-            const res = await deleteOrdenAction(confirmState.targetId);
+            const res = await deleteOrden(confirmState.targetId, token);
             if (res.success) {
                 setAlertState({ isOpen: true, type: 'success', message: res.message! });
                 loadData();

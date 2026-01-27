@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getProveedoresAction, createProveedorAction, updateProveedorAction, deleteProveedorAction } from '@/actions/proveedor-actions';
+import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/service/proveedorDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
-import { IProveedor } from '@/types';
+import { IProveedor } from "@/service/proveedorDP";
 
 export default function ProveedorPage() {
     const [data, setData] = useState<IProveedor[]>([]);
@@ -20,7 +20,6 @@ export default function ProveedorPage() {
     const columns: Column<IProveedor>[] = [
         { header: 'RUC', accessor: 'PRV_RUC' },
         { header: 'RAZÓN SOCIAL', accessor: 'PRV_RAZON_SOCIAL' },
-        { header: 'CONTACTO', accessor: 'PRV_NOMBRE' },
         { header: 'CORREO', accessor: 'PRV_CORREO' },
         { header: 'DIRECCIÓN', accessor: 'PRV_DIRECCION' },
         { header: 'TELÉFONO', accessor: 'PRV_TELEFONO' },
@@ -30,7 +29,6 @@ export default function ProveedorPage() {
     const formFields = [
         { name: 'PRV_RUC', label: 'RUC', required: true },
         { name: 'PRV_RAZON_SOCIAL', label: 'Razón Social', required: true },
-        { name: 'PRV_NOMBRE', label: 'Nombre Contacto', required: true },
         { name: 'PRV_CORREO', label: 'Correo', type: 'email' as const, required: true },
         { name: 'PRV_DIRECCION', label: 'Dirección', required: true },
         { name: 'PRV_TELEFONO', label: 'Teléfono', type: 'tel' as const, required: true },
@@ -39,7 +37,8 @@ export default function ProveedorPage() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getProveedoresAction();
+                const token = localStorage.getItem('token') || undefined;
+                const result = await getSuppliers(token);
                 if (result.success && result.data) {
                     setData(result.data);
                     setAllData(result.data);
@@ -75,12 +74,6 @@ export default function ProveedorPage() {
     const handleSave = async (item: Partial<IProveedor>) => {
         const newItem = item as IProveedor;
 
-        const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-        if (!nameRegex.test(newItem.PRV_NOMBRE)) {
-            showAlert('error', 'El nombre de contacto no puede contener números.');
-            return;
-        }
-
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(newItem.PRV_CORREO)) {
             showAlert('error', 'El correo electrónico no es válido.');
@@ -99,12 +92,13 @@ export default function ProveedorPage() {
         }
 
         const exists = allData.find(d => d.PRV_RUC === newItem.PRV_RUC);
+        const token = localStorage.getItem('token') || undefined;
 
         let result;
         if (exists) {
-            result = await updateProveedorAction(newItem);
+            result = await updateSupplier(newItem, token);
         } else {
-            result = await createProveedorAction(newItem);
+            result = await createSupplier(newItem, token);
         }
 
         if (result.success) {
@@ -138,7 +132,8 @@ export default function ProveedorPage() {
     const executeDelete = async () => {
         if (!confirmState.item) return;
 
-        const result = await deleteProveedorAction(confirmState.item.PRV_RUC);
+        const token = localStorage.getItem('token') || undefined;
+        const result = await deleteSupplier(confirmState.item.PRV_RUC, token);
 
         if (result.success) {
             setData(prev => prev.filter(p => p.PRV_RUC !== confirmState.item!.PRV_RUC));

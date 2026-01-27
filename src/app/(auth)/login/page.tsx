@@ -5,14 +5,13 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Input from "@/components/ui/input";
 import styles from './login.module.css';
-import { loginAction } from '@/actions/auth-actions';
+import { loginAction } from '@/service/authDP';
 import { useAuth } from "@/context/auth-context";
 import Logo from '../../../../public/img/logoConLetras.png';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
-  const [userType, setUserType] = useState<'client' | 'employee'>('client');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -24,16 +23,24 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const result = await loginAction(username, password, userType);
+      const result = await loginAction(username, password);
 
       if (result.success && result.user) {
-        login({
-          ...result.user,
-          role: userType
-        });
-        if (userType === 'client') {
+        const userData = {
+          ...result.user.user,
+          access_token: result.user.access_token
+        };
+        login(userData);
+
+        const userRole = result.user.user?.role;
+
+        if (userRole === 'client') {
           router.push('/productos');
+        } else if (userRole === 'admin') {
+          router.push('/');
         } else {
+          console.warn("Unknown role:", userRole);
+          // Default fallback if needed
           router.push('/');
         }
       } else {
@@ -58,23 +65,6 @@ export default function LoginPage() {
 
           <h2 className="mb-4 fw-bold">Iniciar sesión</h2>
 
-          <div className={styles.toggleContainer}>
-            <button
-              className={`${styles.toggleBtn} ${userType === 'client' ? styles.active : ''}`}
-              onClick={() => setUserType('client')}
-              type="button"
-            >
-              Soy cliente
-            </button>
-            <button
-              className={`${styles.toggleBtn} ${userType === 'employee' ? styles.active : ''}`}
-              onClick={() => setUserType('employee')}
-              type="button"
-            >
-              Soy empleado
-            </button>
-          </div>
-
           <form onSubmit={handleLogin} className="w-100">
             <Input
               label="Usuario"
@@ -82,6 +72,7 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              labelClassName="text-light"
             />
             <Input
               label="Contraseña"
@@ -113,15 +104,11 @@ export default function LoginPage() {
             {/* Placeholder for the tech image. Since I don't have the file, 
                 I will use a standard placeholder or just leave the yellow box. */}
             <div style={{ width: '100%', height: '250px', position: 'relative' }}>
-              {/* 
-                  TODO: Replace this with the actual tech products image.
-                  For now, I'll use a Next.js Image with a placehold.co or reusing vectorHero
-                */}
               <Image
-                src="/img/vectorHero.png"
+                src="/img/logoPrincipal.png"
                 alt="Productos Tech"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </div>

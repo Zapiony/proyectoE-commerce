@@ -17,7 +17,7 @@
 * {
   box-sizing: border-box;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 0;
 }
 
 html,
@@ -45,7 +45,10 @@ main {
 
 
 
-h1, h2, p, a {
+h1,
+h2,
+p,
+a {
   color: var(--white);
 }
 
@@ -117,4 +120,17 @@ footer {
   html {
     color-scheme: dark;
   }
+}
+
+/* ACCESIBILIDAD */
+html.high-contrast {
+  filter: contrast(125%);
+}
+
+html.grayscale-mode {
+  filter: grayscale(100%);
+}
+
+html.high-contrast.grayscale-mode {
+  filter: contrast(125%) grayscale(100%);
 }
