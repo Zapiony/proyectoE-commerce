@@ -37,17 +37,18 @@ export default function ProductosAdminPage() {
 
   // Campos para la tabla
   const formFields = [
-    { name: 'PRD_CODIGO', label: 'Código', required: true },
+    { name: 'PRD_CODIGO', label: 'Código', required: true, helpText: 'Código único del producto (ej. PRD-001)' },
     {
       name: 'CAT_CODIGO',
       label: 'Categoría',
       type: 'select' as const,
       required: true,
-      options: categoryOptions
+      options: categoryOptions,
+      helpText: 'Seleccione la categoría a la que pertenece el producto'
     },
-    { name: 'PRD_DESCRIPCION', label: 'Descripción', required: true },
-    { name: 'PRD_PRECIO', label: 'Precio', type: 'number' as const, required: true },
-    { name: 'PRD_COSTO_ADQUISICION', label: 'Costo Adquisición', type: 'number' as const, required: true },
+    { name: 'PRD_DESCRIPCION', label: 'Descripción', required: true, helpText: 'Nombre descriptivo del producto' },
+    { name: 'PRD_PRECIO', label: 'Precio', type: 'number' as const, required: true, helpText: 'Precio de venta al público (sin impuestos)' },
+    { name: 'PRD_COSTO_ADQUISICION', label: 'Costo Adquisición', type: 'number' as const, required: true, helpText: 'Costo de compra del producto' },
   ];
 
   useEffect(() => {
@@ -114,11 +115,13 @@ export default function ProductosAdminPage() {
 
     const exists = allData.find(d => d.PRD_CODIGO === newItem.PRD_CODIGO);
 
+    const token = localStorage.getItem('token') || undefined;
+
     let result;
     if (exists) {
-      result = await updateProduct(newItem);
+      result = await updateProduct(newItem, token);
     } else {
-      result = await createProduct(newItem);
+      result = await createProduct(newItem, token);
     }
 
     if (result.success) {
@@ -152,7 +155,8 @@ export default function ProductosAdminPage() {
   const executeDelete = async () => {
     if (!confirmState.item) return;
 
-    const result = await deleteProduct(confirmState.item.PRD_CODIGO);
+    const token = localStorage.getItem('token') || undefined;
+    const result = await deleteProduct(confirmState.item.PRD_CODIGO, token);
 
     if (result.success) {
       setData(prev => prev.filter(p => p.PRD_CODIGO !== confirmState.item!.PRD_CODIGO));

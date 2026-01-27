@@ -15,32 +15,36 @@ export default function ProductDetailPage() {
     const [product, setProduct] = useState<IProducto | null>(null);
     const [recommendations, setRecommendations] = useState<IProducto[]>([]);
     const [loading, setLoading] = useState(true);
-    const { addToCart } = useCart();
+    const { addToCart, cart } = useCart();
     const router = useRouter();
+
+    const cartItem = product ? cart.find(item => item.PRD_CODIGO === product.PRD_CODIGO) : null;
+    const currentQty = cartItem ? cartItem.quantity : 0;
+    const isMaxReached = product ? currentQty >= (product.DET_BOD_CANTIDAD || 9999) : false;
+    const isOutOfStock = product ? (product.DET_BOD_CANTIDAD === 0) : false;
 
     useEffect(() => {
         const fetchProduct = async () => {
             const code = params?.code;
             if (!code) return;
 
-            // Decode the code in case it has special characters
-            const decodedCode = decodeURIComponent(Array.isArray(code) ? code[0] : code);
-
             try {
+                // Decode the code in case it has special characters
+                const decodedCode = decodeURIComponent(Array.isArray(code) ? code[0] : code);
+
                 const res = await getProductByCode(decodedCode);
                 if (res.success && res.data) {
                     setProduct(res.data);
-                }
 
-                // Fetch recommendations (random 3)
-                const allRes = await getProducts();
-                if (allRes.success && allRes.data) {
-                    const otherProducts = allRes.data.filter((p: IProducto) => p.PRD_CODIGO !== decodedCode);
-                    // Shuffle and take 3
-                    const shuffled = otherProducts.sort(() => 0.5 - Math.random());
-                    setRecommendations(shuffled.slice(0, 3));
+                    // Fetch recommendations (random 3) only if product found
+                    const allRes = await getProducts();
+                    if (allRes.success && allRes.data) {
+                        const otherProducts = allRes.data.filter((p: IProducto) => p.PRD_CODIGO !== decodedCode);
+                        // Shuffle and take 3
+                        const shuffled = otherProducts.sort(() => 0.5 - Math.random());
+                        setRecommendations(shuffled.slice(0, 3));
+                    }
                 }
-
             } catch (error) {
                 console.error("Error fetching product details", error);
             } finally {
@@ -80,7 +84,7 @@ export default function ProductDetailPage() {
 
                 {/* Info Section */}
                 <div className="col-md-6">
-                    <h1 className="fw-bold mb-2">{product.PRD_DESCRIPCION || ''}</h1>
+                    <h1 className="fw-bold mb-2 text-black">{product.PRD_DESCRIPCION || ''}</h1>
                     <div className="mb-3 text-warning">
                         <i className="fa-solid fa-star"></i> 4.5 <span className="text-muted ms-2">(400 reviews)</span>
                     </div>
@@ -98,15 +102,18 @@ export default function ProductDetailPage() {
                         <li>Ergonómicos e intuitivos</li>
                         <li>Conexión rápida</li>
                         <li>Precio: ${Number(product.PRD_PRECIO).toFixed(2)}</li>
+                        <li><strong>Cantidad disponible:</strong> {product.DET_BOD_CANTIDAD}</li>
                     </ul>
 
                     <ButtonGeneral
                         texto={
                             <span className="d-flex align-items-center justify-content-center gap-2">
-                                Añadir <FontAwesomeIcon icon={faCartPlus} className="small" />
-                            </span> 
+                                {isOutOfStock ? 'Agotado' : isMaxReached ? 'Sin Stock' : 'Añadir'}
+                                {!isOutOfStock && !isMaxReached && <FontAwesomeIcon icon={faCartPlus} className="small" />}
+                            </span>
                         }
-                        onClick={() => addToCart(product)}
+                        onClick={() => !isMaxReached && !isOutOfStock && addToCart(product)}
+                        disabled={isMaxReached || isOutOfStock}
                     />
                 </div>
             </div>

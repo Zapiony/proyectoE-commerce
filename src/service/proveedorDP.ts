@@ -6,6 +6,7 @@ export interface IProveedor {
     PRV_TELEFONO: string;
     PRV_CORREO: string;
     PRV_RAZON_SOCIAL: string;
+    PRV_NOMBRE?: string;
 }
 
 export async function getSuppliers(token?: string) {

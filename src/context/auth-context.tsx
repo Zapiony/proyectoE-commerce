@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-type UserRole = 'guest' | 'client' | 'admin';
+type UserRole = 'guest' | 'client' | 'dba' | 'admin' | 'ROL_BODEGUERO' | 'ROL_VENTAS' | 'ROL_MARKETING' | 'ROL_COMPRAS';
 
 interface User {
     username: string;
@@ -20,6 +20,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -45,15 +47,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
 
                 const data = result.data;
-                console.log('Perfil del usuario (Nuevo):', data);
 
                 if (data) {
-                    // The structure might be nested depending on how backend returns it
-                    // Based on previous code: data.user or data directly
                     const valUser = data.user || data;
                     const userFinal = {
                         ...valUser,
-                        // Ensure critical ID is always at top level
                         cedula: valUser.cedula,
                         username: valUser.cedula || valUser.username || valUser.name,
                         role: valUser.role || 'client'
@@ -64,7 +62,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             } catch (error) {
                 console.error('Error al obtener perfil:', error);
-                // Only remove token if it was really invalid (401/403), but for now safe to clear on error to prevent infinite loops
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 setUser(null);
@@ -78,10 +75,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const login = (userData: User) => {
         setUser(userData);
         setRole(userData.role);
-        if (userData.access_token) {
-            localStorage.setItem('token', userData.access_token);
-        } else if (userData.token) {
-            localStorage.setItem('token', userData.token);
+
+        const token = userData.access_token || userData.token;
+        if (token) {
+            localStorage.setItem('token', token);
         }
     };
 

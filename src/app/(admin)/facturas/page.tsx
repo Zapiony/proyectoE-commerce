@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { GenericTable, Column } from '@/components/admin/generic-table';
-import { getFacturas, anularFactura } from '@/service/facturaDP';
+import { getFacturas, anularFactura, downloadFacturaPdf } from '@/service/facturaDP';
 import AlertModal from '@/components/ui/alert-modal';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import { IFactura } from "@/service/facturaDP";
@@ -72,6 +72,14 @@ export default function FacturasPage() {
         });
     };
 
+    const handlePdfClick = async (item: IFactura) => {
+        const token = localStorage.getItem('token') || undefined;
+        const result = await downloadFacturaPdf(item.FAC_CODIGO, token);
+        if (!result.success) {
+            showAlert('error', result.message || 'Error al descargar PDF');
+        }
+    };
+
     const executeAnular = async () => {
         if (!confirmState.item) return;
 
@@ -101,11 +109,18 @@ export default function FacturasPage() {
                 onSearch={handleSearch}
                 // No onSave or props that imply editing/creating
                 customActions={(item) => (
-                    <ButtonGeneral
-                        texto="ANULAR"
-                        onClick={() => handleAnularClick(item)}
-                        className="btn-danger btn-sm"
-                    />
+                    <div className="d-flex gap-2">
+                        <ButtonGeneral
+                            texto="PDF"
+                            onClick={() => handlePdfClick(item)}
+                            className="btn-info btn-sm text-white"
+                        />
+                        <ButtonGeneral
+                            texto="ANULAR"
+                            onClick={() => handleAnularClick(item)}
+                            className="btn-danger btn-sm"
+                        />
+                    </div>
                 )}
                 idField="FAC_CODIGO"
                 searchPlaceholder="Buscar por cliente, código..."

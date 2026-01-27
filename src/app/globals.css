@@ -107,6 +107,7 @@ footer {
 /* Botón general */
 .btn {
   background-color: var(--primary);
+  color: var(--white);
   border: none;
   border-radius: '15px';
   box-shadow: '0 4px 6px rgba(0,0,0,0.1)';
@@ -114,6 +115,7 @@ footer {
 
 .btn:hover {
   background-color: var(--highlight);
+  color: var(--black);
 }
 
 @media (prefers-color-scheme: dark) {
