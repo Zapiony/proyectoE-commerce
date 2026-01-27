@@ -67,3 +67,53 @@ export async function anularFactura(codigo: number, token?: string) {
         return { success: false, message: 'Error al anular factura' };
     }
 }
+
+export async function getMonthlySalesStats(token?: string) {
+    try {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        const response = await fetch(`${process.env.API_URL}/invoices/stats/monthly`, {
+            method: 'GET',
+            headers: headers,
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return { success: true, data: data };
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        return { success: false, message: 'Error al obtener estadísticas' };
+    }
+}
+
+export async function downloadFacturaPdf(codigo: number, token?: string) {
+    try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${process.env.API_URL}/invoices/${codigo}/pdf`, {
+            method: 'GET',
+            headers: headers,
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+        return { success: true, data: base64 };
+    } catch (error) {
+        console.error('Error downloading PDF:', error);
+        return { success: false, message: 'Error al descargar el PDF' };
+    }
+}

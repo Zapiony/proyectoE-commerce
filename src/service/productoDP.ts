@@ -6,6 +6,7 @@ export interface IProducto {
     PRD_DESCRIPCION: string;
     PRD_PRECIO: number;
     PRD_COSTO_ADQUISICION: number;
+    DET_BOD_CANTIDAD: number;
 }
 
 export async function getProducts() {
@@ -27,7 +28,8 @@ export async function getProducts() {
             CAT_CODIGO: item.CAT_CODIGO,
             PRD_DESCRIPCION: item.PRD_DESCRIPCION || '',
             PRD_PRECIO: item.PRD_PRECIO,
-            PRD_COSTO_ADQUISICION: item.PRD_COSTO_ADQUISICION
+            PRD_COSTO_ADQUISICION: item.PRD_COSTO_ADQUISICION,
+            DET_BOD_CANTIDAD: item.DET_BOD_CANTIDAD
         }));
 
         return { success: true, data: productos };
@@ -57,7 +59,8 @@ export async function getProductByCode(code: string) {
             CAT_CODIGO: rawData.CAT_CODIGO,
             PRD_DESCRIPCION: rawData.PRD_DESCRIPCION || '',
             PRD_PRECIO: rawData.PRD_PRECIO,
-            PRD_COSTO_ADQUISICION: rawData.PRD_COSTO_ADQUISICION
+            PRD_COSTO_ADQUISICION: rawData.PRD_COSTO_ADQUISICION,
+            DET_BOD_CANTIDAD: rawData.DET_BOD_CANTIDAD
         };
 
         return { success: true, data: producto };
@@ -67,7 +70,7 @@ export async function getProductByCode(code: string) {
     }
 }
 
-export async function createProduct(product: IProducto) {
+export async function createProduct(product: IProducto, token?: string) {
     try {
         const validationError = validateProductData(product);
         if (validationError) {
@@ -81,9 +84,14 @@ export async function createProduct(product: IProducto) {
             PRD_COSTO_ADQUISICION: Number(product.PRD_COSTO_ADQUISICION)
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/products`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(productToSave)
         });
 
@@ -100,7 +108,7 @@ export async function createProduct(product: IProducto) {
     }
 }
 
-export async function updateProduct(product: IProducto) {
+export async function updateProduct(product: IProducto, token?: string) {
     try {
         const validationError = validateProductData(product);
         if (validationError) {
@@ -114,9 +122,14 @@ export async function updateProduct(product: IProducto) {
             PRD_COSTO_ADQUISICION: Number(product.PRD_COSTO_ADQUISICION)
         };
 
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/products/${product.PRD_CODIGO}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(productToSave)
         });
 
@@ -133,10 +146,16 @@ export async function updateProduct(product: IProducto) {
     }
 }
 
-export async function deleteProduct(code: string) {
+export async function deleteProduct(code: string, token?: string) {
     try {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${process.env.API_URL}/products/${code}`, {
             method: 'DELETE',
+            headers: headers,
         });
 
         if (!response.ok) {

@@ -3,9 +3,7 @@
 import { getClientDetails } from "./clienteDP";
 export { getClientDetails };
 
-// Verify API URL loaded (Server Side)
 const API_URL = process.env.API_URL;
-if (!API_URL) console.warn("WARNING: process.env.API_URL is undefined in carritoComprasDP.ts");
 
 export async function getCart(identification: string, token?: string) {
     try {
@@ -30,18 +28,18 @@ export async function getCart(identification: string, token?: string) {
     }
 }
 
+
 export async function addToCart(identification: string, productId: string, quantity: number, token?: string) {
     try {
-        const payload = {
-            PRD_CODIGO: productId,
-            cantidad: quantity
-        };
-        console.log("addToCart: Sending payload:", payload, "to", `${API_URL}/cart/${identification}/add`);
-
         const headers: any = { 'Content-Type': 'application/json' };
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
+
+        const payload = {
+            PRD_CODIGO: productId,
+            cantidad: quantity
+        };
 
         const res = await fetch(`${API_URL}/cart/${identification}/add`, {
             method: 'POST',
@@ -51,13 +49,13 @@ export async function addToCart(identification: string, productId: string, quant
 
         if (!res.ok) {
             const errorText = await res.text();
-            console.error(`addToCart Error: Status ${res.status}`, errorText);
+            console.error(`[addToCart] Error en petición POST add: Status ${res.status}`, errorText);
             return { success: false, message: 'Error al agregar al carrito' };
         }
 
         return { success: true, message: 'Producto agregado' };
     } catch (e) {
-        console.error('Error adding to cart:', e);
+        console.error('[addToCart] Excepción capturada:', e);
         return { success: false, message: 'Error al agregar al carrito' };
     }
 }
@@ -86,7 +84,6 @@ export async function removeFromCart(identification: string, productId: string, 
 
 export async function getClientIdentification(token?: string) {
     const client = await getClientDetails(token);
-    console.log("getClientIdentification: Client details for cart:", client);
     return client ? client.CLI_CEDULA_RUC : null;
 }
 
@@ -108,7 +105,8 @@ export async function checkout(identification: string, cedulaFactura: string, fo
             return { success: false, message: 'Error al procesar el pago' };
         }
 
-        return { success: true, message: 'Compra realizada con éxito' };
+        const data = await res.json();
+        return { success: true, message: 'Compra realizada con éxito', invoiceId: data.invoiceId };
     } catch (e) {
         console.error('Error checkout:', e);
         return { success: false, message: 'Error de conexión' };
