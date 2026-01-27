@@ -22,6 +22,7 @@ export interface FormField {
     required?: boolean;
     min?: string;
     options?: FormOption[];
+    helpText?: string;
 }
 
 interface GenericTableProps<T> {
@@ -37,6 +38,8 @@ interface GenericTableProps<T> {
     searchPlaceholder?: string;
     idField?: keyof T;
     entityName?: string;
+    disableEdit?: (item: T) => boolean;
+    disableDelete?: (item: T) => boolean;
 }
 
 export function GenericTable<T extends Record<string, any>>({
@@ -51,7 +54,9 @@ export function GenericTable<T extends Record<string, any>>({
     customActions,
     searchPlaceholder = "Buscar...",
     idField = 'id' as keyof T,
-    entityName
+    entityName,
+    disableEdit,
+    disableDelete
 }: GenericTableProps<T>) {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -103,7 +108,7 @@ export function GenericTable<T extends Record<string, any>>({
         <div className={styles.adminContainer}>
             {/* Header & Create Button */}
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="h3 fw-bold text-dark m-0">{title}</h1>
+                <h1 className="h3 fw-bold  m-0">{title}</h1>
                 {(onSave || onCreate) && (
                     <ButtonGeneral
                         texto={entityName ? `NUEVO ${entityName.toUpperCase()}` : "NUEVO"}
@@ -127,14 +132,14 @@ export function GenericTable<T extends Record<string, any>>({
                                 placeholder={searchPlaceholder}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                labelClassName="text-dark"
+                                labelClassName=""
                                 className="bg-white border"
                                 style={{ padding: '8px 12px' }}
                             />
                         </div>
                         <div className="col-md-4 d-flex gap-2 m-0">
                             <ButtonGeneral texto="Buscar" onClick={handleSearchClick} className="btn-dark w-100" />
-                            <ButtonGeneral texto="Limpiar" onClick={handleClear} className="btn-outline-secondary text-dark w-100 border-secondary" />
+                            <ButtonGeneral texto="Limpiar" onClick={handleClear} className="btn-outline-secondary w-100 border-secondary" />
                         </div>
                     </div>
 
@@ -173,7 +178,9 @@ export function GenericTable<T extends Record<string, any>>({
                                                         <ButtonGeneral
                                                             texto="EDITAR"
                                                             onClick={() => openEditModal(item)}
-                                                            className="btn-warning btn-sm text-dark me-2"
+                                                            className="btn-warning btn-sm  me-2"
+                                                            disabled={disableEdit ? disableEdit(item) : false}
+                                                            title={`Editar registro ${item[idField] || ''}`}
                                                         />
                                                     )}
                                                     {onDelete && (
@@ -181,6 +188,8 @@ export function GenericTable<T extends Record<string, any>>({
                                                             texto="ELIMINAR"
                                                             onClick={() => onDelete(item)}
                                                             className="btn-danger btn-sm"
+                                                            disabled={disableDelete ? disableDelete(item) : false}
+                                                            title={`Eliminar registro ${item[idField] || ''}`}
                                                         />
                                                     )}
                                                 </td>
@@ -221,7 +230,7 @@ export function GenericTable<T extends Record<string, any>>({
                                             <div className="col-12" key={field.name}>
                                                 {field.type === 'select' ? (
                                                     <div className="mb-3">
-                                                        <label className="form-label text-dark fw-bold mb-1" style={{ fontSize: '0.9rem' }}>
+                                                        <label className="form-label  fw-bold mb-1" style={{ fontSize: '0.9rem' }}>
                                                             {field.label} {field.required && <span className="text-danger">*</span>}
                                                         </label>
                                                         <select
@@ -239,20 +248,25 @@ export function GenericTable<T extends Record<string, any>>({
                                                                 </option>
                                                             ))}
                                                         </select>
+                                                        {field.helpText && <small className="form-text text-muted fst-italic ms-1">{field.helpText}</small>}
                                                     </div>
                                                 ) : (
-                                                    <Input
-                                                        label={field.label}
-                                                        type={field.type || 'text'}
-                                                        required={field.required}
-                                                        min={field.min}
-                                                        value={(currentItem as any)?.[field.name] || ''}
-                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                        disabled={(field.name === idField as string) && isEditing}
-                                                        labelClassName="text-dark"
-                                                        className="bg-white border"
-                                                        onClick={(e) => field.type === 'date' && e.currentTarget.showPicker()}
-                                                    />
+                                                    <div className="mb-3">
+                                                        <Input
+                                                            label={field.label}
+                                                            type={field.type || 'text'}
+                                                            required={field.required}
+                                                            min={field.min}
+                                                            value={(currentItem as any)?.[field.name] || ''}
+                                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                            disabled={(field.name === idField as string) && isEditing}
+                                                            labelClassName=""
+                                                            className="bg-white border"
+                                                            onClick={(e) => field.type === 'date' && e.currentTarget.showPicker()}
+                                                            title={field.helpText}
+                                                        />
+                                                        {field.helpText && <small className="form-text text-muted fst-italic ms-1">{field.helpText}</small>}
+                                                    </div>
                                                 )}
                                             </div>
                                         ))}
@@ -264,14 +278,15 @@ export function GenericTable<T extends Record<string, any>>({
                                         texto={isSaving ? 'Guardando...' : 'Guardar Datos'}
                                         type="submit"
                                         disabled={isSaving}
-                                        className="btn-warning text-dark"
+                                        className="btn-warning "
                                     />
                                 </div>
                             </form>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                </div >
+            )
+            }
+        </div >
     );
 }

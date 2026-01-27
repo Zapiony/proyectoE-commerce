@@ -5,6 +5,7 @@ import Input from "@/components/ui/input";
 import { useAuth } from '@/context/auth-context';
 import { checkout } from '@/service/carritoComprasDP';
 import { getClientByCedula } from "@/service/clienteDP";
+import { downloadFacturaPdf } from '@/service/facturaDP';
 import { useCart } from '@/context/cart';
 
 interface CheckoutModalProps {
@@ -20,6 +21,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
     // Form States
     const [cedulaFactura, setCedulaFactura] = useState('');
     const [formaPago, setFormaPago] = useState('TARJETA_CREDITO');
+    const [invoiceId, setInvoiceId] = useState<number | null>(null);
 
     // Mock Payment States
     const [cardNumber, setCardNumber] = useState('');
@@ -94,8 +96,8 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
     // Billing Data Selection
     const [useMyData, setUseMyData] = useState(true);
-    const [clientData, setClientData] = useState<any>(null); // Authenticated User Data
-    const [otherClientData, setOtherClientData] = useState<any>(null); // Search User Data
+    const [clientData, setClientData] = useState<any>(null);
+    const [otherClientData, setOtherClientData] = useState<any>(null);
     const [searchLoading, setSearchLoading] = useState(false);
 
     useEffect(() => {
@@ -108,6 +110,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                 mod.getClientDetails(token).then(data => {
                     console.log("CheckoutModal: Fetch result:", data);
                     if (data) {
+                        console.log("La data recogida es:", data);
                         setClientData(data);
                         setCedulaFactura(data.CLI_CEDULA_RUC || '');
                     } else {
@@ -122,7 +125,6 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
 
     if (!isOpen) return null;
 
-    // Helper to extract Cedula/ID similar to context
     const getCedula = (u: any) => {
         if (!u) return undefined;
         // Prioritize explicit DB columns if present
@@ -147,9 +149,6 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
         finalCedula: cedula,
         useMyData
     });
-
-    const userName = user?.name || user?.user?.name || 'Cliente';
-    const userEmail = user?.email || user?.user?.email || 'No registrado';
 
     const handleOptionChange = (useMine: boolean) => {
         setUseMyData(useMine);
@@ -232,19 +231,12 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             const res = await checkout(cedula, idToUse, finalPaymentMethod, token);
             if (res.success) {
                 setSuccess(true);
+                if (res.invoiceId) {
+                    setInvoiceId(res.invoiceId);
+                    handleDownloadInvoice(res.invoiceId);
+                }
                 clearCart();
-                setTimeout(() => {
-                    onClose();
-                    setSuccess(false);
-                    // Reset form
-                    setCedulaFactura('');
-                    setFormaPago('TARJETA_CREDITO');
-                    setCardNumber('');
-                    setCardExpiry('');
-                    setCardCvv('');
-                    setUseMyData(true);
-                    if (clientData) setCedulaFactura(clientData.CLI_CEDULA_RUC);
-                }, 2000);
+                // Removed auto-close to let user see the button if pop-up blocked
             } else {
                 setError(res.message || 'Error al procesar el pago.');
             }
@@ -253,6 +245,37 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             setError('Ocurrió un error inesperado.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDownloadInvoice = async (id?: number) => {
+        const targetId = id || invoiceId;
+        if (!targetId) return;
+        try {
+            const token = localStorage.getItem('token') || undefined;
+            const res = await downloadFacturaPdf(targetId, token) as { success: boolean, data?: string };
+
+            if (res.success && res.data) {
+                const byteCharacters = atob(res.data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `factura-${targetId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                console.error("Error downloading PDF:", res);
+            }
+        } catch (error) {
+            console.error("Error downloading invoice:", error);
         }
     };
 
@@ -268,7 +291,7 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
             <div className="bg-white rounded-4 p-4 shadow-lg position-relative" style={{ width: '90%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
                 <button
                     onClick={onClose}
-                    className="btn btn-sm text-white position-absolute top-0 end-0 m-3 rounded-circle"
+                    className="btn btn-sm position-absolute top-0 end-0 m-3 rounded-circle"
                 >
                     <i className="fa-solid fa-xmark"></i>
                 </button>
@@ -280,6 +303,17 @@ export default function CheckoutModal({ isOpen, onClose, total }: CheckoutModalP
                         </div>
                         <h3 className="fw-bold text-success">¡Pago Exitoso!</h3>
                         <p className="text-muted">Gracias por su compra.</p>
+                        {invoiceId && (
+                            <button
+                                onClick={() => handleDownloadInvoice()}
+                                className="btn btn-outline-primary mt-3"
+                            >
+                                <i className="fa-solid fa-file-pdf me-2"></i>
+                                Descargar Factura
+                            </button>
+                        )}
+                        <br />
+                        <button className="btn btn-link mt-3" onClick={onClose}>Cerrar</button>
                     </div>
                 ) : (
                     <>

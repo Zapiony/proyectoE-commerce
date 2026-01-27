@@ -7,7 +7,7 @@ interface BotorProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const ButtonGeneral = ({ texto, className = '', ...props }: BotorProps) => {
   return (
     <button
-      className={`btn text-white fw-bold px-4 py-2 ${className}`}
+      className={`btn fw-bold px-4 py-2 ${className}`}
       {...props}
     >
       {texto}

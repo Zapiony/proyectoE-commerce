@@ -25,7 +25,6 @@ export default function UserProfileMenu({ user, onLogout }: UserProfileMenuProps
         }
     }, [user]);
 
-    console.log('Info para la tarjeta del perfil', userInfo);
     const displayName = userInfo?.CLI_NOMBRE || user?.name || user?.username || "Usuario";
     const displayEmail = userInfo?.CLI_CORREO || user?.email || "correo@ejemplo.com";
 

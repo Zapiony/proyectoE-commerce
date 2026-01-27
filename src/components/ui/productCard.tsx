@@ -14,15 +14,22 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     const router = useRouter();
-    const { addToCart } = useCart();
+    const { addToCart, cart } = useCart();
 
     const handleCardClick = () => {
         router.push(`/productos/${product.PRD_CODIGO}`);
     };
 
+    const cartItem = cart.find(item => item.PRD_CODIGO === product.PRD_CODIGO);
+    const currentQty = cartItem ? cartItem.quantity : 0;
+    const isMaxReached = currentQty >= product.DET_BOD_CANTIDAD;
+    const isOutOfStock = product.DET_BOD_CANTIDAD === 0;
+
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation();
-        addToCart(product, 1);
+        if (!isMaxReached && !isOutOfStock) {
+            addToCart(product, 1);
+        }
     };
 
     return (
@@ -63,6 +70,11 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </div>
                     <span className="text-muted small">(400 reviews)</span>
                 </div>
+
+                <p className="card-text text-muted small text-truncate-2 m-0" style={{ minHeight: '40px' }}>
+                    <strong>Cantidad:</strong> {product.DET_BOD_CANTIDAD}
+                </p>
+
                 <div className="mt-auto d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold m-0 text-dark">
                         ${Number(product.PRD_PRECIO).toFixed(2)}
@@ -70,8 +82,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                     <ButtonGeneral
                         texto={
-                            <span className="d-flex align-items-center justify-content-center gap-2">
-                                Añadir <FontAwesomeIcon icon={faCartPlus} className="small" />
+                            <span className="d-flex align-items-center gap-2">
+                                {isOutOfStock ? 'Agotado' : isMaxReached ? 'Sin Stock' : 'Añadir'}
+                                {!isOutOfStock && !isMaxReached && <FontAwesomeIcon icon={faCartPlus} className="small" />}
                             </span>
                         }
                         onClick={handleAddToCart}
