@@ -26,10 +26,10 @@ export default function UsuariosPage() {
 
     // Campos para la tabla
     const formFields = [
-        { name: 'CLI_CEDULA_RUC', label: 'Cédula / RUC', required: true },
-        { name: 'CLI_NOMBRE', label: 'Nombre Completo', required: true },
-        { name: 'CLI_TELEFONO', label: 'Teléfono', type: 'tel' as const, required: true },
-        { name: 'CLI_CORREO', label: 'Correo Electrónico', type: 'email' as const, required: true },
+        { name: 'CLI_CEDULA_RUC', label: 'Cédula / RUC', required: true, helpText: 'Ingrese el número de cédula (10 dígitos) o RUC (13 dígitos)' },
+        { name: 'CLI_NOMBRE', label: 'Nombre Completo', required: true, helpText: 'Nombre y apellido del cliente' },
+        { name: 'CLI_TELEFONO', label: 'Teléfono', type: 'tel' as const, required: true, helpText: 'Número de teléfono de contacto (celular o fijo)' },
+        { name: 'CLI_CORREO', label: 'Correo Electrónico', type: 'email' as const, required: true, helpText: 'Correo electrónico válido' },
     ];
 
     useEffect(() => {

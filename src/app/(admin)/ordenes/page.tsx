@@ -139,7 +139,7 @@ export default function OrdenesPage() {
         {
             header: 'ESTADO',
             accessor: (item) => (
-                <span className={`badge ${item.ORD_ESTADO === 'PENDIENTE' ? 'bg-warning text-dark' : 'bg-success'}`}>
+                <span className={`badge ${item.ORD_ESTADO === 'EN ESPERA' ? 'bg-warning text-dark' : 'bg-success'}`}>
                     {item.ORD_ESTADO}
                 </span>
             )
@@ -182,14 +182,16 @@ export default function OrdenesPage() {
                 onCreate={() => setIsCreateOpen(true)}
                 onDelete={handleDeleteOrder}
                 onSave={handleEditOrder}
+                disableEdit={(item) => item.ORD_ESTADO === 'ENTREGADO'}
+                disableDelete={(item) => item.ORD_ESTADO === 'ENTREGADO'}
                 customActions={(item) => {
-                    const today = new Date().toISOString().split('T')[0];
-                    const deliveryDate = new Date(item.ORD_FECHA_ENTREGA).toISOString().split('T')[0];
+                    const today = new Date().toLocaleDateString();
+                    const deliveryDate = new Date(item.ORD_FECHA_ENTREGA).toLocaleDateString();
                     const isToday = deliveryDate === today;
 
                     return (
                         <>
-                            {item.ORD_ESTADO === 'EN ESPER' && (
+                            {item.ORD_ESTADO === 'EN ESPERA' && (
                                 <ButtonGeneral
                                     texto="RECIBIR"
                                     className="btn-success btn-sm me-2 text-white"
@@ -204,7 +206,7 @@ export default function OrdenesPage() {
                 // Basic form fields to enable the Edit Modal to at least show something if clicked
                 formFields={[
                     { name: 'ORD_CODIGO', label: 'Código', type: 'number', required: true }, // Readonly usually dealt with by disabing in GenericTable if it matches idField
-                    { name: 'PRV_RUC', label: 'Proveedor', type: 'select', options: proveedores.map(p => ({ value: p.PRV_RUC, label: p.PRV_NOMBRE })), required: true },
+                    { name: 'PRV_RUC', label: 'Proveedor', type: 'select', options: proveedores.map(p => ({ value: p.PRV_RUC, label: p.PRV_NOMBRE || p.PRV_RAZON_SOCIAL })), required: true },
                     { name: 'ORD_FECHA_ENTREGA', label: 'Fecha Entrega', type: 'date', required: true, min: new Date().toISOString().split('T')[0] }
                 ]}
                 entityName="Orden"

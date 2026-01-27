@@ -37,10 +37,16 @@ export default function LoginPage() {
         if (userRole === 'client') {
           router.push('/productos');
         } else if (userRole === 'admin') {
-          router.push('/');
+          router.push('/dashboard');
+        } else if (userRole === 'ROL_BODEGUERO') {
+          router.push('/bodega');
+        } else if (userRole === 'ROL_VENTAS') {
+          router.push('/facturas');
+        } else if (userRole === 'ROL_COMPRAS') {
+          router.push('/ordenes');
+        } else if (userRole === 'ROL_MARKETING') {
+          router.push('/dashboard');
         } else {
-          console.warn("Unknown role:", userRole);
-          // Default fallback if needed
           router.push('/');
         }
       } else {

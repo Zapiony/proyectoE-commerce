@@ -116,7 +116,7 @@ export default function ProductosPage() {
             <ul className="list-unstyled">
               <li className="mb-2">
                 <button
-                  className={`btn w-100 text-start rounded-3 fw-bold ${selectedCategory === 'Todo' ? 'btn-dark text-white' : 'btn-outline-dark border-0 text-secondary'}`}
+                  className={`btn w-100 text-start rounded-3 fw-bold ${selectedCategory === 'TODO' ? 'btn-dark text-white' : 'btn-outline-dark border-0 text-white'}`}
                   onClick={() => setSelectedCategory('Todo')}
                 >
                   Todo
@@ -125,7 +125,7 @@ export default function ProductosPage() {
               {categories.map((cat) => (
                 <li key={cat.CAT_CODIGO} className="mb-2">
                   <button
-                    className={`btn w-100 text-start rounded-3 ${selectedCategory === cat.CAT_CODIGO ? 'btn-dark text-white' : 'btn-outline-dark border-0 text-secondary'}`}
+                    className={`btn w-100 text-start rounded-3 ${selectedCategory === cat.CAT_CODIGO ? 'btn-dark text-white' : 'btn-outline-dark border-0 text-white'}`}
                     onClick={() => setSelectedCategory(cat.CAT_CODIGO || '')}
                   >
                     {cat.CAT_NOMBRE}
